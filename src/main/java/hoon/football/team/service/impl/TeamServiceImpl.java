@@ -1,6 +1,9 @@
 package hoon.football.team.service.impl;
 
+import hoon.football.member.domain.Member;
 import hoon.football.member.repository.MemberRepository;
+import hoon.football.team.domain.Team;
+import hoon.football.team.exception.exceptions.TeamCreateException;
 import hoon.football.team.repository.TeamRepository;
 import hoon.football.team.service.TeamService;
 import lombok.RequiredArgsConstructor;
@@ -16,4 +19,12 @@ public class TeamServiceImpl implements TeamService {
     private final MemberRepository memberRepository;
 
 
+    @Override
+    public Team createTeam(String teamName, Long leaderMemberId) {
+        Member leaderMember = memberRepository.findById(leaderMemberId)
+                .orElseThrow(() -> new TeamCreateException("팀장을 찾을 수 없습니다."));
+
+        Team team = new Team(teamName, leaderMember);
+        return teamRepository.save(team);
+    }
 }

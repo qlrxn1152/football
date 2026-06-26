@@ -10,7 +10,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @ControllerAdvice
 public class MemberExceptionHandler {
 
-    // 멤버관련
     @ExceptionHandler(MemberLoginException.class)
     public String handleMemberLoginException(MemberLoginException e, RedirectAttributes redirectAttributes) {
         log.info("[MemberLogin Exception] : {}", e.getMessage());
