@@ -1,10 +1,6 @@
 package hoon.football.member.service.impl;
 
 import hoon.football.member.domain.Member;
-import hoon.football.member.exception.DuplicateUsernameException;
-import hoon.football.member.exception.MemberNotFoundException;
-import hoon.football.member.exception.MemberPasswordLengthException;
-import hoon.football.member.exception.MemberUsernameLengthException;
 import hoon.football.member.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -88,6 +84,22 @@ class MemberServiceImplSuccessTest {
         // then
         assertThat(members).hasSize(2);
         assertThat(members).contains(userA, userB);
+    }
+
+    @Test
+    @DisplayName(value = "로그인_성공")
+    void login_success() throws Exception {
+        // given
+        Member userA = new Member("userA", "1234");
+        memberService.save(userA);
+
+        // when
+        Member loginMember = memberService.login("userA", "1234");
+
+        // then
+        assertThat(loginMember).isEqualTo(userA);
+        assertThat(loginMember.getUsername()).isEqualTo("userA");
+        assertThat(loginMember.getPassword()).isEqualTo("1234");
     }
 
 }

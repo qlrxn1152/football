@@ -43,33 +43,10 @@ public class MemberController {
 
     @PostMapping("/login")
     public String login(@ModelAttribute MemberLoginDto memberLoginDto, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        Member loginMember = memberService.login(memberLoginDto.getUsername(), memberLoginDto.getPassword());
+        request.getSession().setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
 
-        try {
-            Member loginMember = memberService.login(memberLoginDto.getUsername(), memberLoginDto.getPassword());
-
-            request.getSession().setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
-            return "redirect:/";
-
-        } catch (MemberLoginException e1) {
-            redirectAttributes.addFlashAttribute("errorMessage", e1.getMessage());
-            return "redirect:/login";
-        } catch (MemberUsernameLengthException e2) {
-            redirectAttributes.addFlashAttribute("errorMessage", e2.getMessage());
-            return "redirect:/login";
-        } catch (MemberPasswordLengthException e3) {
-            redirectAttributes.addFlashAttribute("errorMessage", e3.getMessage());
-            return "redirect:/login";
-        } catch (DuplicateUsernameException e4) {
-            redirectAttributes.addFlashAttribute("errorMessage", e4.getMessage());
-            return "redirect:/login";
-        } catch (MemberNotFoundException e5) {
-            redirectAttributes.addFlashAttribute("errorMessage", e5.getMessage());
-            return "redirect:/login";
-        } catch (Exception e) {
-            log.error("로그인 처리 중 알수없는 에러발생", e);
-            redirectAttributes.addFlashAttribute("errorMessage", "로그인중 알수없는 에러발생");
-            return "redirect:/login";
-        }
+        return "redirect:/";
     }
 
     @GetMapping("/members")

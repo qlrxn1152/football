@@ -1,7 +1,7 @@
 package hoon.football.member.service.impl;
 
 import hoon.football.member.domain.Member;
-import hoon.football.member.exception.*;
+import hoon.football.member.exception.exceptions.*;
 import hoon.football.member.repository.MemberRepository;
 import hoon.football.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
