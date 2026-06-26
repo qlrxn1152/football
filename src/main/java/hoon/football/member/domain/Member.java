@@ -16,7 +16,7 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(unique = true,nullable = false, length = 10)
+    @Column(unique = true, nullable = false, length = 10)
     private String username;
 
     @Column(nullable = false, length = 15)
