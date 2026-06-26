@@ -14,4 +14,6 @@ public interface MemberService {
     Member findByUsername(String username);
 
     List<Member> findAll();
+
+    Member login(String username, String password);
 }

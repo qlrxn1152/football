@@ -1,10 +1,7 @@
 package hoon.football.member.service.impl;
 
 import hoon.football.member.domain.Member;
-import hoon.football.member.exception.DuplicateUsernameException;
-import hoon.football.member.exception.MemberNotFoundException;
-import hoon.football.member.exception.MemberPasswordLengthException;
-import hoon.football.member.exception.MemberUsernameLengthException;
+import hoon.football.member.exception.*;
 import hoon.football.member.repository.MemberRepository;
 import hoon.football.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +47,15 @@ public class MemberServiceImpl implements MemberService {
         return repository.findAll();
     }
 
+    @Override
+    public Member login(String username, String password) {
+        Member loginMember = findByUsername(username);
+        if ( password.equals(loginMember.getPassword())) {
+            return loginMember;
+        }
+
+        throw new MemberLoginException("로그인에 실패했습니다.");
+    }
 
 
     private void validateMemberSave(Member member) {
