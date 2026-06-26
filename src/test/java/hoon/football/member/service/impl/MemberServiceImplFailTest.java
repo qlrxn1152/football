@@ -71,7 +71,7 @@ class MemberServiceImplFailTest {
     @DisplayName(value = "저장_실패 ( 비밀번호 길이 최대조건 )")
     void save_fail_passwordLength_max() throws Exception {
         // given
-        Member userA = new Member("userA", "1");
+        Member userA = new Member("userA", "1sdaokfasodkfasokdfsaok");
 
         // when && then
         assertThatThrownBy(() -> memberService.save(userA))
