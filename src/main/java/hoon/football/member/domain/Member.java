@@ -25,8 +25,6 @@ public class Member {
     @Column(name = "member_rating", nullable = false)
     private Integer rating;
 
-    @OneToOne()
-    private Team team;
 
     public Member(String username, String password) {
         this.username = username;
