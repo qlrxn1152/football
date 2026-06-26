@@ -21,21 +21,29 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member save(Member member) {
-        return null;
+        // 아이디가 같으면 가입실패
+
+
+
+
+        return repository.save(member);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Member> findById(Long id) {
-        return Optional.empty();
+        return repository.findById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Member> findByUsername(String username) {
-        return Optional.empty();
+        return repository.findByUsername(username);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Member> findAll() {
-        return List.of();
+        return repository.findAll();
     }
 }
