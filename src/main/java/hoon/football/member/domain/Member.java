@@ -1,5 +1,6 @@
 package hoon.football.member.domain;
 
+import hoon.football.team.domain.Team;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,6 +24,9 @@ public class Member {
 
     @Column(name = "member_rating", nullable = false)
     private Integer rating;
+
+    @OneToOne()
+    private Team team;
 
     public Member(String username, String password) {
         this.username = username;
