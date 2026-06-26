@@ -1,8 +1,11 @@
 package hoon.football.member.service.impl;
 
 import hoon.football.member.domain.Member;
+import hoon.football.member.exception.DuplicateUsernameException;
+import hoon.football.member.exception.MemberNotFoundException;
+import hoon.football.member.exception.MemberPasswordLengthException;
+import hoon.football.member.exception.MemberUsernameLengthException;
 import hoon.football.member.service.MemberService;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-class MemberServiceImplTest {
+class MemberServiceImplSuccessTest {
 
     @Autowired MemberService memberService;
 
@@ -45,7 +47,7 @@ class MemberServiceImplTest {
         memberService.save(userA);
 
         // when
-        Member findMember = memberService.findById(userA.getId()).orElseThrow();
+        Member findMember = memberService.findById(userA.getId());
 
         // then
         assertThat(findMember).isEqualTo(userA);
@@ -62,7 +64,7 @@ class MemberServiceImplTest {
         memberService.save(userA);
 
         // when
-        Member findMember = memberService.findByUsername("userA").orElseThrow();
+        Member findMember = memberService.findByUsername("userA");
 
         // then
         assertThat(findMember).isEqualTo(userA);
@@ -87,4 +89,5 @@ class MemberServiceImplTest {
         assertThat(members).hasSize(2);
         assertThat(members).contains(userA, userB);
     }
+
 }

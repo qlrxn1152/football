@@ -9,9 +9,9 @@ public interface MemberService {
 
     Member save(Member member);
 
-    Optional<Member> findById(Long id);
+    Member findById(Long id);
 
-    Optional<Member> findByUsername(String username);
+    Member findByUsername(String username);
 
     List<Member> findAll();
 }
