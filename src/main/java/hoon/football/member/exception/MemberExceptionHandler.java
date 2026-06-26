@@ -29,21 +29,21 @@ public class MemberExceptionHandler {
     public String handlerMemberUsernameLengthException(MemberUsernameLengthException e, RedirectAttributes redirectAttributes) {
         log.info("[USERNAME Length Exception] : {}", e.getMessage());
         redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-        return "redirect:/login";
+        return "redirect:/members/new";
     }
 
     @ExceptionHandler(MemberPasswordLengthException.class)
     public String handlerMemberPasswordLengthException(MemberPasswordLengthException e, RedirectAttributes redirectAttributes) {
         log.info("[PASSWORD Length Exception] : {}", e.getMessage());
         redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-        return "redirect:/login";
+        return "redirect:/members/new";
     }
 
     @ExceptionHandler(DuplicateUsernameException.class)
     public String handlerDuplicateUsernameException(DuplicateUsernameException e, RedirectAttributes redirectAttributes) {
         log.info("[DUPLICATE USERNAME Exception] : {}", e.getMessage());
         redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-        return "redirect:/login";
+        return "redirect:/members/new";
     }
 
 
