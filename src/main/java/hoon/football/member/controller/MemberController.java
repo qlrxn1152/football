@@ -49,8 +49,15 @@ public class MemberController {
         return "redirect:/";
     }
 
+    @PostMapping("/logout")
+    public String logout(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        request.getSession(false).invalidate();
+        return "redirect:/";
+    }
+
     @GetMapping("/members")
     public String membersForm(Model model) {
+
         model.addAttribute("members", memberService.findAll());
         return "members/list";
     }
