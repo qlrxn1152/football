@@ -1,13 +1,12 @@
 package hoon.football.member.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(of = {"id", "username", "password", "rating"})
 public class Member {
 
     private static final Integer MEMBER_RATING_VALUE = 1000;
@@ -19,10 +18,10 @@ public class Member {
     @Column(unique = true, nullable = false, length = 10)
     private String username;
 
-    @Column(nullable = false, length = 15)
+    @Column(nullable = false, length = 100)
     private String password;
 
-    @Column(name = "member_rating")
+    @Column(name = "member_rating", nullable = false)
     private Integer rating;
 
     public Member(String username, String password) {

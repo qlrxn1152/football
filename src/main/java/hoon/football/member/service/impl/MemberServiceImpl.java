@@ -6,6 +6,7 @@ import hoon.football.member.repository.MemberRepository;
 import hoon.football.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,12 +20,17 @@ import java.util.Optional;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Member save(Member member) {
         validateMemberSave(member);
 
-        return repository.save(member);
+        String encodedPassword = passwordEncoder.encode(member.getPassword());
+
+        Member encodedMember = new Member(member.getUsername(), encodedPassword);
+
+        return repository.save(encodedMember);
     }
 
     @Override
@@ -50,11 +56,12 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member login(String username, String password) {
         Member loginMember = findByUsername(username);
-        if ( password.equals(loginMember.getPassword())) {
-            return loginMember;
+        if (!passwordEncoder.matches(password, loginMember.getPassword())) {
+            throw new MemberLoginException("로그인에 실패했습니다.");
         }
 
-        throw new MemberLoginException("로그인에 실패했습니다.");
+        return loginMember;
+
     }
 
 
