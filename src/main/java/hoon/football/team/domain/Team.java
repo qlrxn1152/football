@@ -22,6 +22,9 @@ public class Team {
     @Column(name = "team_rating", nullable = false)
     private Integer rating;
 
+
+    @ManyToOne
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "leader_member_id", nullable = false)
     private Member leaderMember;

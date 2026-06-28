@@ -45,7 +45,7 @@ public class TeamController {
 
     @GetMapping("/teams/{teamId}")
     public String teamDetailForm(@PathVariable Long teamId, Model model) {
-        Team findTeam = teamService.findById(teamId);
+        Team findTeam = teamService.findDetailByTeamId(teamId);
         model.addAttribute("team", findTeam);
 
         return "teams/detail";

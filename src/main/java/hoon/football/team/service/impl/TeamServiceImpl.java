@@ -62,6 +62,13 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     @Transactional(readOnly = true)
+    public Team findDetailByTeamId(Long teamId) {
+        return teamRepository.findByIdWithLeaderMember(teamId)
+                .orElseThrow(() -> new TeamNotFoundException("팀을 찾을 수 없습니다."));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<Team> findAll() {
         return teamRepository.findAll();
     }

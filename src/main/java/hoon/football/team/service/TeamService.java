@@ -15,6 +15,8 @@ public interface TeamService {
 
     Team findByLeaderMemberId(Long leaderMemberId);
 
+    Team findDetailByTeamId(Long teamId);
+
     List<Team> findAll();
 
 }
