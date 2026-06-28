@@ -37,9 +37,6 @@ public class Member {
     }
 
     public void createTeamAsLeaderMember(Team team) {
-        if (this.team != null) {
-            throw new AlreadyJoinedTeamException("팀이 이미 존재합니다.");
-        }
         this.team = team;
     }
 

@@ -1,6 +1,7 @@
 package hoon.football.team.service.impl;
 
 import hoon.football.member.domain.Member;
+import hoon.football.member.exception.exceptions.AlreadyJoinedTeamException;
 import hoon.football.member.service.MemberService;
 import hoon.football.team.domain.Team;
 import hoon.football.team.exception.exceptions.TeamCreateException;
@@ -47,6 +48,21 @@ class TeamServiceImplFailTest {
         assertThatThrownBy(() -> teamService.createTeam("teamA", savedMember.getId())) // 중복 !
                 .isInstanceOf(TeamNameDuplicateException.class)
                 .hasMessage("팀 이름이 이미 존재합니다.");
+    }
+
+    @Test
+    @DisplayName(value = "팀조회 실패 ( 회원 팀 이미 존재 )")
+    void createTeam_fail_AlreadyJoinedTeam() throws Exception {
+        // given
+        Member member = new Member("userA", "1234");
+
+        Member savedMember = memberService.save(member);
+        teamService.createTeam("teamA", savedMember.getId()); // 팀이름이 teamA 인 팀을 생성.
+
+        // when && then
+        assertThatThrownBy(() -> teamService.createTeam("teamB", savedMember.getId())) // 이미 팀이 존재하는 멤버가 팀을 생성
+                .isInstanceOf(AlreadyJoinedTeamException.class)
+                .hasMessage("팀이 이미 존재합니다.");
     }
 
     @Test
