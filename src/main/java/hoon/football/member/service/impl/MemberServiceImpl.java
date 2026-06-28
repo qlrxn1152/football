@@ -54,6 +54,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Member login(String username, String password) {
         Member loginMember = findByUsername(username);
         if (!passwordEncoder.matches(password, loginMember.getPassword())) {

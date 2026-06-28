@@ -12,12 +12,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class TeamServiceImpl implements TeamService {
 
     private final TeamRepository teamRepository;
@@ -31,27 +33,30 @@ public class TeamServiceImpl implements TeamService {
         Team team = new Team(teamName, leaderMember);
         return teamRepository.save(team);
     }
-
-
+    
     @Override
+    @Transactional(readOnly = true)
     public Team findById(Long id) {
         return teamRepository.findById(id)
                 .orElseThrow(() -> new TeamNotFoundException("ID로, 팀을 조회하지 못했습니다."));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Team findByTeamName(String teamName) {
         return teamRepository.findByTeamName(teamName)
                 .orElseThrow(() -> new TeamNotFoundException("TeamName으로, 팀을 조회하지 못했습니다."));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Team findByLeaderMemberId(Long leaderMemberId) {
         return teamRepository.findByLeaderMemberId(leaderMemberId)
                 .orElseThrow(() -> new TeamNotFoundException("leaderMemberId로, 팀을 조회하지 못했습니다."));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Team> findAll() {
         return teamRepository.findAll();
     }

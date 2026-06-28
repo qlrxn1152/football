@@ -7,7 +7,7 @@ import lombok.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(of = {"id", "username", "password", "rating"})
+@ToString(of = {"id", "username", "rating"})
 public class Member {
 
     private static final Integer MEMBER_RATING_VALUE = 1000;
