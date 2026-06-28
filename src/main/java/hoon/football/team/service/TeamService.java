@@ -16,4 +16,5 @@ public interface TeamService {
     Team findByLeaderMemberId(Long leaderMemberId);
 
     List<Team> findAll();
+
 }
