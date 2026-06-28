@@ -2,6 +2,7 @@ package hoon.football.team.exception;
 
 import hoon.football.member.exception.exceptions.MemberLoginException;
 import hoon.football.team.exception.exceptions.TeamCreateException;
+import hoon.football.team.exception.exceptions.TeamNameDuplicateException;
 import hoon.football.team.exception.exceptions.TeamNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -22,6 +23,13 @@ public class TeamExceptionHandler {
     @ExceptionHandler(TeamNotFoundException.class)
     public String handlerTeamNotFoundException(TeamNotFoundException e, RedirectAttributes redirectAttributes) {
         log.info("[TeamNotFound Exception] : {}", e.getMessage());
+        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        return "redirect:/";
+    }
+
+    @ExceptionHandler(TeamNameDuplicateException.class)
+    public String handlerTeamNameDuplicateException(TeamNameDuplicateException e, RedirectAttributes redirectAttributes) {
+        log.info("[TeamNameDuplicate Exception] : {}", e.getMessage());
         redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         return "redirect:/";
     }

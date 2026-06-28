@@ -29,9 +29,7 @@ public class TeamServiceImpl implements TeamService {
         validateDuplicateTeamName(teamName);
 
         Team team = new Team(teamName, leaderMember);
-        Team savedTeam = teamRepository.save(team);
-
-        return savedTeam;
+        return teamRepository.save(team);
     }
 
 
@@ -50,7 +48,7 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public Team findByLeaderMemberId(Long leaderMemberId) {
         return teamRepository.findByLeaderMemberId(leaderMemberId)
-                .orElseThrow(() -> new TeamCreateException("leaderMemberId로, 팀을 조회하지 못했습니다."));
+                .orElseThrow(() -> new TeamNotFoundException("leaderMemberId로, 팀을 조회하지 못했습니다."));
     }
 
     @Override
