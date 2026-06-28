@@ -1,5 +1,7 @@
 package hoon.football.team.controller;
 
+import hoon.football.joinrequest.domain.TeamJoinRequest;
+import hoon.football.joinrequest.service.TeamJoinRequestService;
 import hoon.football.member.domain.Member;
 import hoon.football.member.dto.MemberSessionDto;
 import hoon.football.member.service.MemberService;
@@ -16,6 +18,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 @Controller
 @Slf4j
 @RequiredArgsConstructor
@@ -23,6 +27,7 @@ public class TeamController {
 
     private final TeamService teamService;
     private final MemberService memberService;
+    private final TeamJoinRequestService teamJoinRequestService;
 
     private final EntityManager em;
 
@@ -47,12 +52,14 @@ public class TeamController {
         return "teams/list";
     }
 
-    // Entity 대신, Dto 를 만들어서 반환하도록 Refactoring
+    // Entity 대신, Dto 를 만들어서 model 에 넣을수있도록 Refactoring
     @GetMapping("/teams/{teamId}")
     public String teamDetailForm(@PathVariable Long teamId, Model model) {
         Team findTeam = teamService.findDetailTeamByTeamId(teamId);
-        model.addAttribute("team", findTeam);
+        List<TeamJoinRequest> requests = teamJoinRequestService.findAllRequestsByTeamId(teamId);
 
+        model.addAttribute("team", findTeam);
+        model.addAttribute("requests", requests);
         return "teams/detail";
     }
 
@@ -66,6 +73,7 @@ public class TeamController {
         teamService.updateTeamName(teamId, teamEditDto.getTeamName(), loginMember.getId());
         redirectAttributes.addFlashAttribute("successMessage", "팀 이름 변경 성공.");
         return "redirect:/teams";
-        }
+    }
+
 
 }

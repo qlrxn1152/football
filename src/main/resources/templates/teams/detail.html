@@ -14,11 +14,6 @@
 
 <div>
     <p>
-        <strong>팀 ID:</strong>
-        <span th:text="${team.id}">1</span>
-    </p>
-
-    <p>
         <strong>팀 레이팅:</strong>
         <span th:text="${team.rating}">1000</span>
     </p>
@@ -36,7 +31,6 @@
 <table border="1">
     <thead>
     <tr>
-        <th>회원 ID</th>
         <th>회원 이름</th>
         <th>레이팅</th>
     </tr>
@@ -48,12 +42,44 @@
     </tr>
 
     <tr th:each="member : ${members}">
-        <td th:text="${member.id}">1</td>
         <td th:text="${member.username}">userA</td>
         <td th:text="${member.rating}">1000</td>
     </tr>
     </tbody>
 </table>
+
+<hr>
+
+<h3>가입신청 팀원 목록</h3>
+
+<p th:if="${successMessage}" th:text="${successMessage}" style="color: green;">
+    성공 메시지
+</p>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>회원 이름</th>
+        <th>레이팅</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:if="${#lists.isEmpty(requests)}">
+        <td colspan="3">아직 가입신청한 팀원이 없습니다.</td>
+    </tr>
+
+    <tr th:each="request : ${requests}">
+        <td th:text="${request.member.username}">userA</td>
+        <td th:text="${request.member.rating}">1000</td>
+    </tr>
+    </tbody>
+</table>
+
+<form th:action="@{/teams/{teamId}/join-requests(teamId=${team.id})}"
+      method="post">
+    <button type="submit">가입 신청</button>
+</form>
 
 <hr>
 
@@ -65,6 +91,8 @@
     <a th:href="@{/teams/{teamId}/edit(teamId=${team.id})}">
         팀 이름 수정
     </a>
+
+
 </div>
 
 </body>

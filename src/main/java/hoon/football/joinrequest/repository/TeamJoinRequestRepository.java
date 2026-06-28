@@ -10,5 +10,5 @@ public interface TeamJoinRequestRepository extends JpaRepository<TeamJoinRequest
 
     List<TeamJoinRequest> findAllByTeam_IdAndStatus(Long teamId, TeamJoinRequestStatus stats);
 
-    boolean existsByMember_IdAndTeam_IdAndStatus(Long teamId, Long memberId, TeamJoinRequestStatus stats);
+    boolean existsByMember_IdAndTeam_IdAndStatus(Long memberId, Long teamId, TeamJoinRequestStatus stats);
 }

@@ -52,14 +52,14 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
 
     // 비즈니스 로직
 
-    private @NonNull Team findTeam(Long teamId) {
-        return teamRepository.findById(teamId)
-                .orElseThrow(() -> new TeamNotFoundException("ID로, 팀을 조회하지 못했습니다."));
-    }
-
     private @NonNull Member findMember(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException("[ID(pk)] 조회실패"));
+    }
+
+    private @NonNull Team findTeam(Long teamId) {
+        return teamRepository.findById(teamId)
+                .orElseThrow(() -> new TeamNotFoundException("ID로, 팀을 조회하지 못했습니다."));
     }
 
     private void validateCreateRequest(Long teamId, Member member) {
