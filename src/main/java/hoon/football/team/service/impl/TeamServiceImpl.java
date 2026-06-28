@@ -39,13 +39,6 @@ public class TeamServiceImpl implements TeamService {
         return savedTeam;
     }
 
-    private static void validateAlreadyJoinedTeam(Member leaderMember) {
-        Team memberTeam = leaderMember.getTeam();
-        if (memberTeam != null) {
-            throw new AlreadyJoinedTeamException("팀이 이미 존재합니다.");
-        }
-    }
-
     @Override
     @Transactional(readOnly = true)
     public Team findById(Long id) {
@@ -90,7 +83,7 @@ public class TeamServiceImpl implements TeamService {
 
 
     /**
-     * 파라미터로, leaderMemberId 를 받고, 이 값을 memberRepository 에서 해당 member 를 조회.
+     * 파라미터로, leaderMemberId 를 받고, 이 값을 memberRepository 에서 해당 member 를 조회하는 로직. ( 팀장이 누구인지 확인가능 )
      * @param leaderMemberId
      * @return 해당 PK 값을 가진 Member 가 존재하면, Member 리턴 / 존재하지않는다면 -> 예외발생
      */
@@ -98,6 +91,18 @@ public class TeamServiceImpl implements TeamService {
         return memberRepository.findById(leaderMemberId)
                 .orElseThrow(() -> new TeamCreateException("팀장을 찾을 수 없습니다."));
     }
+
+    /**
+     * 파라미터로, leaderMemberId 를 받고, 이 값을 memberrepository 에서 해당 member 를 조회 -> 해당 member 가 가입한 팀이 존재하는지 확인하는 로직
+     * @param leaderMember
+     */
+    private static void validateAlreadyJoinedTeam(Member leaderMember) {
+        Team memberTeam = leaderMember.getTeam();
+        if (memberTeam != null) {
+            throw new AlreadyJoinedTeamException("팀이 이미 존재합니다.");
+        }
+    }
+
 
 
 }

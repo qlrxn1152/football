@@ -3,6 +3,7 @@ package hoon.football.team.controller;
 import hoon.football.member.domain.Member;
 import hoon.football.member.dto.MemberSessionDto;
 import hoon.football.member.service.MemberService;
+import hoon.football.team.domain.Team;
 import hoon.football.team.dto.TeamSaveDto;
 import hoon.football.team.service.TeamService;
 import hoon.football.web.SessionConst;
@@ -10,10 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -45,5 +43,11 @@ public class TeamController {
         return "teams/list";
     }
 
+    @GetMapping("/teams/{teamId}")
+    public String teamDetailForm(@PathVariable Long teamId, Model model) {
+        Team findTeam = teamService.findById(teamId);
+        model.addAttribute("team", findTeam);
 
+        return "teams/detail";
+    }
 }

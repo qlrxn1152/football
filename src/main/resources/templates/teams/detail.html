@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>팀 상세</title>
+</head>
+<body>
+
+<h1>팀 상세</h1>
+
+<hr>
+
+<h2 th:text="${team.teamName}">팀 이름</h2>
+
+<div>
+    <p>
+        <strong>팀 ID:</strong>
+        <span th:text="${team.id}">1</span>
+    </p>
+
+    <p>
+        <strong>팀 레이팅:</strong>
+        <span th:text="${team.rating}">1000</span>
+    </p>
+
+    <p>
+        <strong>팀장:</strong>
+        <span th:text="${team.leaderMember.username}">leader</span>
+    </p>
+</div>
+
+<hr>
+
+<h3>팀원 목록</h3>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>회원 ID</th>
+        <th>회원 이름</th>
+        <th>레이팅</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:if="${#lists.isEmpty(members)}">
+        <td colspan="3">아직 팀원이 없습니다.</td>
+    </tr>
+
+    <tr th:each="member : ${members}">
+        <td th:text="${member.id}">1</td>
+        <td th:text="${member.username}">userA</td>
+        <td th:text="${member.rating}">1000</td>
+    </tr>
+    </tbody>
+</table>
+
+<hr>
+
+<div>
+    <a th:href="@{/teams}">팀 목록으로</a>
+    |
+    <a th:href="@{/}">홈으로</a>
+</div>
+
+</body>
+</html>

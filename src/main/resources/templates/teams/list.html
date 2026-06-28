@@ -40,7 +40,10 @@
     <td th:text="${team.rating}">1000</td>
     <td th:text="${team.leaderMember.username}">userA</td>
     <td>
-      <a th:href="@{/teams/{teamId}(teamId=${team.id})}">상세</a>
+      <a th:href="@{/teams/{teamId}(teamId=${team.id})}"
+         th:text="${team.teamName}">
+        팀 이름
+      </a>
     </td>
   </tr>
   </tbody>
