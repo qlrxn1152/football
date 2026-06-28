@@ -1,6 +1,6 @@
 package hoon.football.joinrequest.domain;
 
-public enum TeamJoinRequestStats {
+public enum TeamJoinRequestStatus {
 
     PENDING, ACCEPT, REJECT;
 

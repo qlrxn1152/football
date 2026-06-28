@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface TeamJoinRequestService {
 
-    TeamJoinRequest createRequest(Member member, Team team);
+    TeamJoinRequest createRequest(Long memberId, Long teamId);
 
     List<TeamJoinRequest> findAllRequestsByTeamId (Long teamId);
 }

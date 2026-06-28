@@ -26,7 +26,7 @@ public class TeamJoinRequest {
     private Team team;
 
     @Enumerated(EnumType.STRING)
-    private TeamJoinRequestStats status;
+    private TeamJoinRequestStatus status;
 
     @Column(name = "request_at")
     private LocalDateTime requestAt;
@@ -34,7 +34,7 @@ public class TeamJoinRequest {
     public TeamJoinRequest(Member member, Team team) {
         this.member = member;
         this.team = team;
-        this.status = TeamJoinRequestStats.PENDING;
+        this.status = TeamJoinRequestStatus.PENDING;
         this.requestAt = LocalDateTime.now();
     }
 
