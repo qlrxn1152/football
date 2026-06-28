@@ -36,6 +36,8 @@ public class TeamJoinRequest {
         this.team = team;
         this.status = TeamJoinRequestStatus.PENDING;
         this.requestAt = LocalDateTime.now();
+
+        team.getTeamJoinRequests().add(this);
     }
 
 }
