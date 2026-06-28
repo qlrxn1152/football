@@ -15,21 +15,21 @@ public class TeamExceptionHandler {
 
     @ExceptionHandler(TeamCreateException.class)
     public String handleTeamCreateException(TeamCreateException e, RedirectAttributes redirectAttributes) {
-        log.info("[TeamCreate Exception] : {}", e.getMessage());
+        log.error("[TeamCreate Exception] : {}", e.getMessage());
         redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         return "redirect:/";
     }
 
     @ExceptionHandler(TeamNotFoundException.class)
     public String handlerTeamNotFoundException(TeamNotFoundException e, RedirectAttributes redirectAttributes) {
-        log.info("[TeamNotFound Exception] : {}", e.getMessage());
+        log.error("[TeamNotFound Exception] : {}", e.getMessage());
         redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         return "redirect:/";
     }
 
     @ExceptionHandler(TeamNameDuplicateException.class)
     public String handlerTeamNameDuplicateException(TeamNameDuplicateException e, RedirectAttributes redirectAttributes) {
-        log.info("[TeamNameDuplicate Exception] : {}", e.getMessage());
+        log.error("[TeamNameDuplicate Exception] : {}", e.getMessage());
         redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         return "redirect:/";
     }

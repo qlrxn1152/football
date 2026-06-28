@@ -4,9 +4,7 @@ import hoon.football.member.domain.Member;
 import hoon.football.member.exception.exceptions.AlreadyJoinedTeamException;
 import hoon.football.member.repository.MemberRepository;
 import hoon.football.team.domain.Team;
-import hoon.football.team.exception.exceptions.TeamCreateException;
-import hoon.football.team.exception.exceptions.TeamNameDuplicateException;
-import hoon.football.team.exception.exceptions.TeamNotFoundException;
+import hoon.football.team.exception.exceptions.*;
 import hoon.football.team.repository.TeamRepository;
 import hoon.football.team.service.TeamService;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +60,7 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     @Transactional(readOnly = true)
-    public Team findDetailByTeamId(Long teamId) {
+    public Team findDetailTeamByTeamId(Long teamId) {
         return teamRepository.findByIdWithLeaderMember(teamId)
                 .orElseThrow(() -> new TeamNotFoundException("팀을 찾을 수 없습니다."));
     }
@@ -72,6 +70,28 @@ public class TeamServiceImpl implements TeamService {
     public List<Team> findAll() {
         return teamRepository.findAll();
     }
+
+
+    @Override
+    public void updateTeamName(Long teamId, String newTeamName, Long leaderMemberId) {
+        Team loginMemberTeam = validateUpdateTeamName(teamId, newTeamName, leaderMemberId); // 검증로직
+        loginMemberTeam.changeTeamName(newTeamName); // 변경
+    }
+
+    /**
+     * 파라미터로 teamName 을 받고, 이 값을 teamRepository 에서 해당 TeamName 을 가진 팀을 조회
+     * @param teamName
+     * @return DB 에, teamName 을 가진 Team 이 존재하면 true / 존재하지 않으면 false
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public boolean existsByTeamName(String teamName) {
+        return teamRepository.existsByTeamName(teamName);
+    }
+
+
+
+
 
 
 
@@ -110,6 +130,27 @@ public class TeamServiceImpl implements TeamService {
         }
     }
 
+    private @NonNull Team validateUpdateTeamName(Long teamId, String newTeamName, Long leaderMemberId) {
+        // 팀이 있기는함 ?
+        findById(teamId);
+        Team loginMemberTeam = findByLeaderMemberId(leaderMemberId); // 로그인한 멤버 팀은 ?
+        checkTeamLeaderMember(leaderMemberId, loginMemberTeam); // 팀장은 맞음?
+        validateDuplicateTeamNameWithException(newTeamName); // 팀이름이 이미 있지는않음?
+
+        return loginMemberTeam;
+    }
+
+    private void validateDuplicateTeamNameWithException(String newTeamName) {
+        if (existsByTeamName(newTeamName)) {
+            throw new DuplicateTeamNameException("팀 이름이 이미 존재합니다.");
+        }
+    }
+
+    private static void checkTeamLeaderMember(Long leaderMemberId, Team loginMemberTeam) {
+        if (loginMemberTeam.getLeaderMember().getId().equals(leaderMemberId)) {
+            throw new NotTeamLeaderException("해당하는 팀 팀장이 아닙니다.");
+        }
+    }
 
 
 }

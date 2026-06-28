@@ -4,6 +4,7 @@ import hoon.football.member.domain.Member;
 import hoon.football.member.exception.exceptions.AlreadyJoinedTeamException;
 import hoon.football.member.service.MemberService;
 import hoon.football.team.domain.Team;
+import hoon.football.team.exception.exceptions.DuplicateTeamNameException;
 import hoon.football.team.exception.exceptions.TeamCreateException;
 import hoon.football.team.exception.exceptions.TeamNameDuplicateException;
 import hoon.football.team.exception.exceptions.TeamNotFoundException;
@@ -42,10 +43,12 @@ class TeamServiceImplFailTest {
         // given
         Member member = new Member("userA", "1234");
         Member savedMember = memberService.save(member);
+        Member memberB = new Member("userB", "1234");
+        Member savedMemberB = memberService.save(memberB);
         teamService.createTeam("teamA", savedMember.getId()); // 팀이름이 teamA 인 팀을 생성.
 
         // when && then
-        assertThatThrownBy(() -> teamService.createTeam("teamA", savedMember.getId())) // 중복 !
+        assertThatThrownBy(() -> teamService.createTeam("teamA", savedMemberB.getId())) // 팀이름 중복 !
                 .isInstanceOf(TeamNameDuplicateException.class)
                 .hasMessage("팀 이름이 이미 존재합니다.");
     }
@@ -106,6 +109,59 @@ class TeamServiceImplFailTest {
                 .isInstanceOf(TeamNotFoundException.class)
                 .hasMessage("leaderMemberId로, 팀을 조회하지 못했습니다.");
     }
+
+    // 팀조회 , 로그인한 멤버 팀 , 팀장확인, 팀이름 중복
+    @Test
+    @DisplayName(value = "팀이름 변경 실패 ( 팀 조회 실패 )")
+    void updateTeamName_fail_notFoundTeam() throws Exception {
+        // given
+        Member member = new Member("userA", "1234");
+        Member savedMember = memberService.save(member);
+        teamService.createTeam("teamA", savedMember.getId());
+
+        // when && then
+        assertThatThrownBy(() -> teamService.updateTeamName(344L, "teamB", savedMember.getId()))
+                .isInstanceOf(TeamNotFoundException.class)
+                .hasMessage("ID로, 팀을 조회하지 못했습니다.");
+    }
+
+    @Test
+    @DisplayName(value = "팀이름 변경 실패 (로그인한 멤버의 팀이 아님 )")
+    void updateTeamName_fail_notLoginMemberTeam() throws Exception {
+        // given
+        Member member = new Member("userA", "1234");
+        Member memberB = new Member("userB", "1234");
+        Member savedMember = memberService.save(member);
+        Member savedMemberB = memberService.save(memberB);
+        Team savedTeam = teamService.createTeam("teamA", savedMember.getId());
+
+        // when && then
+        assertThat(savedMemberB.getTeam()).isNull();
+        assertThat(savedMember.getTeam()).isEqualTo(savedTeam);
+        assertThatThrownBy(() -> teamService.updateTeamName(savedTeam.getId(), "teamB", savedMemberB.getId()))
+                .isInstanceOf(TeamNotFoundException.class)
+                .hasMessage("leaderMemberId로, 팀을 조회하지 못했습니다.");
+    }
+
+    @Test
+    @DisplayName(value = "팀이름 변경 실패 (변경 팀 이름 중복)")
+    void updateTeamName_fail_notTeamLeader() throws Exception {
+        // given
+        Member member = new Member("userA", "1234");
+        Member memberB = new Member("userB", "1234");
+        Member savedMember = memberService.save(member);
+        Member savedMemberB = memberService.save(memberB);
+        Team savedTeam = teamService.createTeam("teamA", savedMember.getId());
+        Team savedTeamB = teamService.createTeam("teamB", savedMemberB.getId());
+
+        // when && then
+        // teamA -> teamB 로 변경
+        assertThatThrownBy(() -> teamService.updateTeamName(savedTeam.getId(), "teamB", savedMember.getId()))
+                .isInstanceOf(DuplicateTeamNameException.class)
+                .hasMessage("팀 이름이 이미 존재합니다.");
+    }
+
+    //TODO : 팀장 확인은, 팀원 구현이후 확인 !!!
 
 
 

@@ -22,9 +22,6 @@ public class Team {
     @Column(name = "team_rating", nullable = false)
     private Integer rating;
 
-
-    @ManyToOne
-
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "leader_member_id", nullable = false)
     private Member leaderMember;
@@ -34,4 +31,9 @@ public class Team {
         this.leaderMember = leaderMember;
         this.rating = TEAM_RATING_VALUE;
     }
+
+    public void changeTeamName(String teamName) {
+        this.teamName = teamName;
+    }
+
 }

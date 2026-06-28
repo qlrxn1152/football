@@ -4,9 +4,11 @@ import hoon.football.member.domain.Member;
 import hoon.football.member.dto.MemberSessionDto;
 import hoon.football.member.service.MemberService;
 import hoon.football.team.domain.Team;
+import hoon.football.team.dto.TeamEditDto;
 import hoon.football.team.dto.TeamSaveDto;
 import hoon.football.team.service.TeamService;
 import hoon.football.web.SessionConst;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -21,6 +23,8 @@ public class TeamController {
 
     private final TeamService teamService;
     private final MemberService memberService;
+
+    private final EntityManager em;
 
     @GetMapping("/teams/new")
     public String teamSaveForm(@ModelAttribute TeamSaveDto teamSaveDto) {
@@ -43,11 +47,25 @@ public class TeamController {
         return "teams/list";
     }
 
+    // Entity 대신, Dto 를 만들어서 반환하도록 Refactoring
     @GetMapping("/teams/{teamId}")
     public String teamDetailForm(@PathVariable Long teamId, Model model) {
-        Team findTeam = teamService.findDetailByTeamId(teamId);
+        Team findTeam = teamService.findDetailTeamByTeamId(teamId);
         model.addAttribute("team", findTeam);
 
         return "teams/detail";
     }
+
+    @GetMapping("/teams/{teamId}/edit")
+    public String teamEditForm(@PathVariable Long teamId, @ModelAttribute TeamEditDto teamEditDto) {
+        return "teams/edit";
+    }
+
+    @PostMapping("/teams/{teamId}/edit")
+    public String teamEdit(@PathVariable Long teamId, @ModelAttribute TeamEditDto teamEditDto, RedirectAttributes redirectAttributes, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) MemberSessionDto loginMember) {
+        teamService.updateTeamName(teamId, teamEditDto.getTeamName(), loginMember.getId());
+        redirectAttributes.addFlashAttribute("successMessage", "팀 이름 변경 성공.");
+        return "redirect:/teams";
+        }
+
 }

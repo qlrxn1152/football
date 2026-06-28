@@ -61,6 +61,10 @@
     <a th:href="@{/teams}">팀 목록으로</a>
     |
     <a th:href="@{/}">홈으로</a>
+    |
+    <a th:href="@{/teams/{teamId}/edit(teamId=${team.id})}">
+        팀 이름 수정
+    </a>
 </div>
 
 </body>

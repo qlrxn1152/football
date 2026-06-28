@@ -15,8 +15,12 @@ public interface TeamService {
 
     Team findByLeaderMemberId(Long leaderMemberId);
 
-    Team findDetailByTeamId(Long teamId);
+    Team findDetailTeamByTeamId(Long teamId);
 
     List<Team> findAll();
+
+    boolean existsByTeamName(String teamName);
+
+    void updateTeamName(Long teamId, String newTeamName, Long leaderMemberId);
 
 }

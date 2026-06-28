@@ -92,7 +92,21 @@ class TeamServiceImplSuccessTest {
         assertThat(findTeam.getLeaderMember()).isEqualTo(savedMember);
         assertThat(findTeam.getTeamName()).isEqualTo("teamA");
         assertThat(findTeam.getRating()).isEqualTo(1000);
+    }
 
+    @Test
+    @DisplayName(value = "팀이름 변경 성공")
+    void updateTeamName_success() throws Exception {
+        // given
+        Member member = new Member("userA", "1234");
+        Member savedMember = memberService.save(member);
+
+        Team savedTeam = teamService.createTeam("teamA", savedMember.getId());
+        // when
+        teamService.updateTeamName(savedTeam.getId(), "teamB", savedMember.getId());
+
+        // then
+        assertThat(savedTeam.getTeamName()).isEqualTo("teamB");
     }
 
 

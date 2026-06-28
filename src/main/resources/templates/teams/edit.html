@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>팀 이름 수정</title>
+</head>
+<body>
+
+<h1>팀 이름 수정</h1>
+
+<hr>
+
+<form th:action="@{/teams/{teamId}/edit(teamId=${teamId})}"
+      th:object="${teamEditDto}"
+      method="post">
+
+    <div>
+        <label for="teamName">팀 이름</label>
+        <input type="text"
+               id="teamName"
+               th:field="*{teamName}"
+               placeholder="수정할 팀 이름을 입력하세요">
+    </div>
+
+    <br>
+
+    <button type="submit">수정하기</button>
+</form>
+
+<hr>
+
+<div>
+    <a th:href="@{/teams/{teamId}(teamId=${teamId})}">팀 상세로 돌아가기</a>
+    |
+    <a th:href="@{/teams}">팀 목록으로</a>
+</div>
+
+</body>
+</html>
