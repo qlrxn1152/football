@@ -57,6 +57,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional(readOnly = true)
     public Member login(String username, String password) {
         Member loginMember = findByUsername(username);
+
         if (!passwordEncoder.matches(password, loginMember.getPassword())) {
             throw new MemberLoginException("로그인에 실패했습니다.");
         }

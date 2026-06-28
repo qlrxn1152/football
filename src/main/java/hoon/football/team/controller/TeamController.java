@@ -1,6 +1,7 @@
 package hoon.football.team.controller;
 
 import hoon.football.member.domain.Member;
+import hoon.football.member.dto.MemberSessionDto;
 import hoon.football.member.service.MemberService;
 import hoon.football.team.dto.TeamSaveDto;
 import hoon.football.team.service.TeamService;
@@ -28,8 +29,9 @@ public class TeamController {
         return "teams/saveTeam";
     }
 
+    // loginMember -> null 일 가능성도 체크
     @PostMapping("/teams/new")
-    public String teamSave(@ModelAttribute TeamSaveDto teamSaveDto, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember, RedirectAttributes redirectAttributes) {
+    public String teamSave(@ModelAttribute TeamSaveDto teamSaveDto, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) MemberSessionDto loginMember, RedirectAttributes redirectAttributes) {
         teamService.createTeam(teamSaveDto.getTeamName(), loginMember.getId());
         redirectAttributes.addFlashAttribute("successMessage", "팀 생성 성공!");
 

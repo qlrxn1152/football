@@ -3,6 +3,7 @@ package hoon.football.member.controller;
 import hoon.football.member.domain.Member;
 import hoon.football.member.dto.MemberLoginDto;
 import hoon.football.member.dto.MemberSaveDto;
+import hoon.football.member.dto.MemberSessionDto;
 import hoon.football.member.exception.*;
 import hoon.football.member.service.MemberService;
 import hoon.football.web.SessionConst;
@@ -42,15 +43,17 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute MemberLoginDto memberLoginDto, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+    public String login(@ModelAttribute MemberLoginDto memberLoginDto, HttpServletRequest request) {
         Member loginMember = memberService.login(memberLoginDto.getUsername(), memberLoginDto.getPassword());
-        request.getSession().setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
+
+        // 세션 전용 memberDto 저장
+        request.getSession().setAttribute(SessionConst.LOGIN_MEMBER, new MemberSessionDto(loginMember.getId(), loginMember.getUsername()));
 
         return "redirect:/";
     }
 
     @PostMapping("/logout")
-    public String logout(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+    public String logout(HttpServletRequest request) {
         request.getSession(false).invalidate();
         return "redirect:/";
     }
