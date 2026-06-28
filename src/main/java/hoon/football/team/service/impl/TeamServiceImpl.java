@@ -31,7 +31,10 @@ public class TeamServiceImpl implements TeamService {
         validateDuplicateTeamName(teamName);
 
         Team team = new Team(teamName, leaderMember);
-        return teamRepository.save(team);
+        Team savedTeam = teamRepository.save(team);
+        leaderMember.createTeamAsLeaderMember(savedTeam);
+
+        return savedTeam;
     }
     
     @Override

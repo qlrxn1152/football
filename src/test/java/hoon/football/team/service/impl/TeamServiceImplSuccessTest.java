@@ -36,6 +36,8 @@ class TeamServiceImplSuccessTest {
         assertThat(savedTeam.getLeaderMember()).isEqualTo(savedMember);
         assertThat(savedTeam.getTeamName()).isEqualTo("teamA");
         assertThat(savedTeam.getRating()).isEqualTo(1000);
+
+        assertThat(savedMember.getTeam()).isEqualTo(savedTeam);
     }
 
     @Test
