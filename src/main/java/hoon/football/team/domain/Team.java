@@ -1,9 +1,13 @@
 package hoon.football.team.domain;
 
+import hoon.football.joinrequest.domain.TeamJoinRequest;
 import hoon.football.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -25,6 +29,12 @@ public class Team {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "leader_member_id", nullable = false)
     private Member leaderMember;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "team")
+    private List<Member> members = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "team")
+    private List<TeamJoinRequest> teamJoinRequests = new ArrayList<>();
 
     public Team(String teamName, Member leaderMember) {
         this.teamName = teamName;

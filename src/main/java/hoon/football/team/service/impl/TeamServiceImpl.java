@@ -147,7 +147,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     private static void checkTeamLeaderMember(Long leaderMemberId, Team loginMemberTeam) {
-        if (loginMemberTeam.getLeaderMember().getId().equals(leaderMemberId)) {
+        if (!loginMemberTeam.getLeaderMember().getId().equals(leaderMemberId)) {
             throw new NotTeamLeaderException("해당하는 팀 팀장이 아닙니다.");
         }
     }

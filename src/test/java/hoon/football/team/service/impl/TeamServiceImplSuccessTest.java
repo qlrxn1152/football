@@ -85,7 +85,7 @@ class TeamServiceImplSuccessTest {
         Team savedTeam = teamService.createTeam("teamA", savedMember.getId());
 
         // when
-        Team findTeam = teamService.findByLeaderMemberId(savedTeam.getId());
+        Team findTeam = teamService.findByLeaderMemberId(savedMember.getId());
 
         // then
         assertThat(findTeam).isSameAs(savedTeam);

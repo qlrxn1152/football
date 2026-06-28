@@ -1,9 +1,13 @@
 package hoon.football.member.domain;
 
+import hoon.football.joinrequest.domain.TeamJoinRequest;
 import hoon.football.member.exception.exceptions.AlreadyJoinedTeamException;
 import hoon.football.team.domain.Team;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -29,6 +33,12 @@ public class Member {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     private Team team;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "leaderMember")
+    private Team leadingTeam;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
+    private List<TeamJoinRequest> requests = new ArrayList<>();
 
     public Member(String username, String password) {
         this.username = username;
