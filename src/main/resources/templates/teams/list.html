@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>팀 목록</title>
+</head>
+<body>
+
+<h1>팀 목록</h1>
+
+<a th:href="@{/teams/new}">팀 생성</a>
+<a th:href="@{/}">홈으로</a>
+
+<hr>
+
+<p th:if="${#lists.isEmpty(teams)}">
+  등록된 팀이 없습니다.
+</p>
+
+<p th:if="${successMessage}" th:text="${successMessage}" style="color: green;">
+  성공 메시지
+</p>
+
+
+<table border="1" th:if="${!#lists.isEmpty(teams)}">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>팀 이름</th>
+    <th>레이팅</th>
+    <th>팀장</th>
+    <th>상세</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <tr th:each="team : ${teams}">
+    <td th:text="${team.id}">1</td>
+    <td th:text="${team.teamName}">teamA</td>
+    <td th:text="${team.rating}">1000</td>
+    <td th:text="${team.leaderMember.username}">userA</td>
+    <td>
+      <a th:href="@{/teams/{teamId}(teamId=${team.id})}">상세</a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+</body>
+</html>

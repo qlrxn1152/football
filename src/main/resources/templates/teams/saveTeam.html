@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>팀 생성</title>
+</head>
+<body>
+
+<h1>팀 생성</h1>
+
+<p th:if="${errorMessage}" th:text="${errorMessage}" style="color: red;">
+    에러 메시지
+</p>
+
+<form th:action="@{/teams/new}" th:object="${teamSaveDto}" method="post">
+    <div>
+        <label for="teamName">팀 이름</label>
+        <input type="text" id="teamName" th:field="*{teamName}">
+    </div>
+
+    <button type="submit">팀 생성</button>
+</form>
+
+<a th:href="@{/}">홈으로</a>
+<a th:href="@{/teams}">팀 목록</a>
+
+</body>
+</html>
