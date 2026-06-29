@@ -78,7 +78,7 @@
         <td>
             <form th:action="@{/teams/{teamId}/join-requests/{requestMemberId}/accept(
                     teamId=${team.id},
-                    requestMemberId=${request.id}
+                    requestMemberId=${request.member.id}
                 )}"
                   method="post"
                   style="display:inline;">
@@ -87,7 +87,7 @@
 
             <form th:action="@{/teams/{teamId}/join-requests/{requestMemberId}/reject(
                     teamId=${team.id},
-                    requestMemberId=${request.id}
+                    requestMemberId=${request.member.id}
                 )}"
                   method="post"
                   style="display:inline;">

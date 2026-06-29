@@ -56,6 +56,7 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
         return joinRepository.findAllByTeam_IdAndStatus(teamId, TeamJoinRequestStatus.PENDING);
     }
 
+    // 테스트코드 확인할거 -> 1. 팀장만 가능한지 / 2. 수락하고나서 status = ACCEPTED 로 바뀌는지, / 3. 수락하고나서 팀에 멤버추가됐는지 / 4. 수락하고나서 멤버에 팀이 추가됐는지
     @Override
     public void acceptRequest(Long memberId, Long teamId, Long loginMemberId) {
         Member member = findMember(memberId);
@@ -65,6 +66,7 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
         findRequestAndAcceptRequest(memberId, teamId, member, team);
     }
 
+    // 테스트코드 확인할거 -> 1. 팀장만 가능한지 / 2. 수락하고나서 status = REJECTED 로 바뀌는지 / 3. 거절하고나서 팀에 멤버 추가 안되는거 맞는지 / 4. 거절하고나서 멤버에 팀이 추가 안되는거 맞는지
     @Override
     public void rejectRequest(Long memberId, Long teamId, Long loginMemberId) {
         Member member = findMember(memberId);
@@ -75,7 +77,6 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
     }
 
     // 비즈니스 로직
-
     private @NonNull Member findMember(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException("[ID(pk)] 조회실패"));
