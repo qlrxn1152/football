@@ -46,6 +46,10 @@ public class Team {
         this.teamName = teamName;
     }
 
+    public void changeLeaderMember(Member leaderMember) {
+        this.leaderMember = leaderMember;
+    }
+
 
 
 }

@@ -72,7 +72,31 @@
     <tr th:each="request : ${requests}">
         <td th:text="${request.member.username}">userA</td>
         <td th:text="${request.member.rating}">1000</td>
+        <td th:text="${#temporals.format(request.requestAt, 'yyyy-MM-dd HH:mm')}">
+            2026-01-01 12:00
+        </td>
+        <td>
+            <form th:action="@{/teams/{teamId}/join-requests/{requestMemberId}/accept(
+                    teamId=${team.id},
+                    requestMemberId=${request.id}
+                )}"
+                  method="post"
+                  style="display:inline;">
+                <button type="submit">수락</button>
+            </form>
+
+            <form th:action="@{/teams/{teamId}/join-requests/{requestMemberId}/reject(
+                    teamId=${team.id},
+                    requestMemberId=${request.id}
+                )}"
+                  method="post"
+                  style="display:inline;">
+                <button type="submit">거절</button>
+            </form>
+        </td>
     </tr>
+
+
     </tbody>
 </table>
 

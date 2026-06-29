@@ -34,8 +34,9 @@ public class Member {
     @JoinColumn(name = "team_id")
     private Team team;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "leaderMember")
-    private Team leadingTeam;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, name = "team_role")
+    private TeamRole teamRole;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
     private List<TeamJoinRequest> requests = new ArrayList<>();
@@ -48,6 +49,15 @@ public class Member {
 
     public void createTeamAsLeaderMember(Team team) {
         this.team = team;
+        this.teamRole = TeamRole.LEADER;
+        team.getMembers().add(this);
+        team.changeLeaderMember(this);
+    }
+
+    public void joinTeam(Team team) {
+        this.team = team;
+        this.teamRole = TeamRole.MEMBER;
+        team.getMembers().add(this);
     }
 
 

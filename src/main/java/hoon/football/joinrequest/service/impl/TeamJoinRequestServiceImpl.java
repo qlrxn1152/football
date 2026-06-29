@@ -2,6 +2,7 @@ package hoon.football.joinrequest.service.impl;
 
 import hoon.football.joinrequest.domain.TeamJoinRequest;
 import hoon.football.joinrequest.domain.TeamJoinRequestStatus;
+import hoon.football.joinrequest.exception.exceptions.NotFoundTeamJoinRequestException;
 import hoon.football.joinrequest.exception.exceptions.DuplicateTeamJoinRequestException;
 import hoon.football.joinrequest.repository.TeamJoinRequestRepository;
 import hoon.football.joinrequest.service.TeamJoinRequestService;
@@ -39,6 +40,12 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
         // 멤버가 팀에, 가입신청을 넣음
         TeamJoinRequest request = new TeamJoinRequest(member, team); // -> 요청생성
         return joinRepository.save(request); // -> 요청저장
+    }
+
+    @Override
+    public TeamJoinRequest findByTeam_IdAndMember_idAndStatus(Long teamId, Long memberId) {
+        return joinRepository.findByTeam_IdAndMember_idAndStatus(teamId, memberId, TeamJoinRequestStatus.PENDING)
+                .orElseThrow(() -> new NotFoundTeamJoinRequestException("요청을 조회하지 못했습니다."));
     }
 
 
