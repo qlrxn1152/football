@@ -20,7 +20,7 @@
 
     <p>
         <strong>팀장:</strong>
-        <span th:text="${team.leaderMember.username}">leader</span>
+        <span th:text="${team.leaderMemberUsername}">leader</span>
     </p>
 </div>
 
@@ -43,7 +43,7 @@
 
     <tr th:each="member : ${members}">
         <td th:text="${member.username}">userA</td>
-        <td th:text="${member.rating}">1000</td>
+        <td th:text="${member.memberRating}">1000</td>
     </tr>
     </tbody>
 </table>
@@ -61,6 +61,7 @@
     <tr>
         <th>회원 이름</th>
         <th>레이팅</th>
+        <th>신청날짜</th>
     </tr>
     </thead>
 
@@ -70,15 +71,15 @@
     </tr>
 
     <tr th:each="request : ${requests}">
-        <td th:text="${request.member.username}">userA</td>
-        <td th:text="${request.member.rating}">1000</td>
+        <td th:text="${request.requestMemberUsername}">userA</td>
+        <td th:text="${request.requestMemberRating}">1000</td>
         <td th:text="${#temporals.format(request.requestAt, 'yyyy-MM-dd HH:mm')}">
             2026-01-01 12:00
         </td>
         <td>
             <form th:action="@{/teams/{teamId}/join-requests/{requestMemberId}/accept(
                     teamId=${team.id},
-                    requestMemberId=${request.member.id}
+                    requestMemberId=${request.requestMemberId}
                 )}"
                   method="post"
                   style="display:inline;">
@@ -87,7 +88,7 @@
 
             <form th:action="@{/teams/{teamId}/join-requests/{requestMemberId}/reject(
                     teamId=${team.id},
-                    requestMemberId=${request.member.id}
+                    requestMemberId=${request.requestMemberId}
                 )}"
                   method="post"
                   style="display:inline;">

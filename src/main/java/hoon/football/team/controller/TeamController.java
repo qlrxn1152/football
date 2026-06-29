@@ -6,14 +6,13 @@ import hoon.football.member.domain.Member;
 import hoon.football.member.dto.MemberSessionDto;
 import hoon.football.member.service.MemberService;
 import hoon.football.team.domain.Team;
-import hoon.football.team.dto.TeamEditDto;
-import hoon.football.team.dto.TeamListDto;
-import hoon.football.team.dto.TeamSaveDto;
+import hoon.football.team.dto.*;
 import hoon.football.team.service.TeamService;
 import hoon.football.web.SessionConst;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -48,7 +47,6 @@ public class TeamController {
 
     @GetMapping("/teams")
     public String teamsForm(Model model) {
-        // id, teamName, rating, leaderMember ==> leaderMember -> member ... => LAZY ... => leaderMember -> leaderMemberUsername
         List<TeamListDto> dtoTeams = teamService.findAll().stream()
                 .map(team -> new TeamListDto(team.getId(), team.getTeamName(), team.getRating(), team.getLeaderMember().getUsername()))
                 .toList();
@@ -57,16 +55,16 @@ public class TeamController {
         return "teams/list";
     }
 
-    // Entity 대신, Dto 를 만들어서 model 에 넣을수있도록 Refactoring
     @GetMapping("/teams/{teamId}")
     public String teamDetailForm(@PathVariable Long teamId, Model model) {
-        Team findTeam = teamService.findDetailTeamByTeamId(teamId);
-        List<Member> members = memberService.findByTeamId(teamId);
-        List<TeamJoinRequest> requests = teamJoinRequestService.findAllRequestsByTeamId(teamId);
+        TeamDetailDto findTeamDto = teamToTeamDetailDto(teamId);
+        List<TeamMemberDto> membersDto = memberToTeamMemberDto(teamId);
+        List<TeamRequestMemberDto> requestsDto = requestToTeamRequestMemberDto(teamId);
 
-        model.addAttribute("team", findTeam);
-        model.addAttribute("members", members);
-        model.addAttribute("requests", requests);
+
+        model.addAttribute("team", findTeamDto);
+        model.addAttribute("members", membersDto);
+        model.addAttribute("requests", requestsDto);
         return "teams/detail";
     }
 
@@ -82,5 +80,24 @@ public class TeamController {
         return "redirect:/teams";
     }
 
+    // 비즈니스 로직
+    private @NonNull List<TeamRequestMemberDto> requestToTeamRequestMemberDto(Long teamId) {
+        return teamJoinRequestService.findAllRequestsByTeamId(teamId)
+                .stream()
+                .map(request -> new TeamRequestMemberDto(request.getMember().getId(), request.getMember().getUsername(), request.getMember().getRating(), request.getRequestAt()))
+                .toList();
+    }
+
+    private @NonNull List<TeamMemberDto> memberToTeamMemberDto(Long teamId) {
+        return memberService.findByTeamId(teamId)
+                .stream()
+                .map(member -> new TeamMemberDto(member.getUsername(), member.getRating()))
+                .toList();
+    }
+
+    private @NonNull TeamDetailDto teamToTeamDetailDto(Long teamId) {
+        Team findTeam = teamService.findDetailTeamByTeamId(teamId); // id, teamName, teamRating, teamLeaderMemberUsername
+        return new TeamDetailDto(findTeam.getId(), findTeam.getTeamName(), findTeam.getRating(), findTeam.getLeaderMember().getUsername());
+    }
 
 }
