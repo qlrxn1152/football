@@ -15,7 +15,7 @@ public interface TeamJoinRequestService {
 
     List<TeamJoinRequest> findAllRequestsByTeamId (Long teamId);
 
-    void acceptRequest(Long memberId, Long teamId);
+    void acceptRequest(Long memberId, Long teamId, Long loginMemberId);
 
-    void rejectRequest(Long memberId, Long teamId);
+    void rejectRequest(Long memberId, Long teamId, Long loginMemberId);
 }

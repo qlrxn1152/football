@@ -1,6 +1,8 @@
 package hoon.football.joinrequest.exception;
 
 import hoon.football.joinrequest.exception.exceptions.DuplicateTeamJoinRequestException;
+import hoon.football.joinrequest.exception.exceptions.NotFoundTeamJoinRequestException;
+import hoon.football.joinrequest.exception.exceptions.NotTeamLeaderException;
 import hoon.football.member.exception.exceptions.*;
 import hoon.football.team.exception.exceptions.TeamNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -14,9 +16,23 @@ public class TeamJoinRequestExceptionHandler {
 
     @ExceptionHandler(DuplicateTeamJoinRequestException.class)
     public String handleDuplicateTeamJoinRequestException(DuplicateTeamJoinRequestException e, RedirectAttributes redirectAttributes) {
-        log.info("[DuplicateTeamJoinRequest Exception] : {}", e.getMessage());
+        log.error("[DuplicateTeamJoinRequest Exception] : {}", e.getMessage());
         redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-        return "redirect:/login";
+        return "redirect:/teams";
+    }
+
+    @ExceptionHandler(NotFoundTeamJoinRequestException.class)
+    public String handleNotFoundTeamJoinRequestException(NotFoundTeamJoinRequestException e, RedirectAttributes redirectAttributes) {
+        log.error("[NotFoundTeamJoinRequest Exception] : {}", e.getMessage());
+        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        return "redirect:/teams";
+    }
+
+    @ExceptionHandler(NotTeamLeaderException.class)
+    public String handleNotTeamLeaderException(NotTeamLeaderException e, RedirectAttributes redirectAttributes) {
+        log.error("[NotTeamLeader Exception] : {}", e.getMessage());
+        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        return "redirect:/teams";
     }
 
 

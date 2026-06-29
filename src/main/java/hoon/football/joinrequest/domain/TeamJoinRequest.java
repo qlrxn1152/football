@@ -46,7 +46,7 @@ public class TeamJoinRequest {
         team.getTeamJoinRequests().remove(this);
     }
 
-    public void reject(Member member, Team team) {
+    public void reject() {
 //        team.getTeamJoinRequests().remove(this); --> 이 코드가 필요? 정책은 ? ==> 즉, 거절하면 가입신청도 없앨거냐?
         this.status = TeamJoinRequestStatus.REJECTED;
     }

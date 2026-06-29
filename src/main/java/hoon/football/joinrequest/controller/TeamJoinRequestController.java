@@ -34,22 +34,22 @@ public class TeamJoinRequestController {
         return "redirect:/teams/" + teamId;
     }
 
+
+    // 팀장만 가능하게 ..
     @PostMapping("/teams/{teamId}/join-requests/{memberId}/accept")
-    public String acceptRequest(@PathVariable Long teamId, @PathVariable Long memberId, RedirectAttributes redirectAttributes) {
-        teamJoinRequestService.acceptRequest(memberId, teamId);
+    public String acceptRequest(@PathVariable Long teamId, @PathVariable Long memberId, RedirectAttributes redirectAttributes, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) MemberSessionDto loginMember) {
+        teamJoinRequestService.acceptRequest(memberId, teamId, loginMember.getId());
 
         redirectAttributes.addFlashAttribute("successMessage", "승인완료");
         return "redirect:/teams/" + teamId;
     }
 
     @PostMapping("/teams/{teamId}/join-requests/{memberId}/reject")
-    public String rejectRequest(@PathVariable Long teamId, @PathVariable Long memberId, RedirectAttributes redirectAttributes) {
-        teamJoinRequestService.rejectRequest(memberId, teamId);
+    public String rejectRequest(@PathVariable Long teamId, @PathVariable Long memberId, RedirectAttributes redirectAttributes, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) MemberSessionDto loginMember) {
+        teamJoinRequestService.rejectRequest(memberId, teamId, loginMember.getId());
 
         redirectAttributes.addFlashAttribute("errorMessage", "승인거절");
         return "redirect:/teams/" + teamId;
-
-
     }
 
 

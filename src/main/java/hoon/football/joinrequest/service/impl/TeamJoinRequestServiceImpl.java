@@ -4,6 +4,7 @@ import hoon.football.joinrequest.domain.TeamJoinRequest;
 import hoon.football.joinrequest.domain.TeamJoinRequestStatus;
 import hoon.football.joinrequest.exception.exceptions.NotFoundTeamJoinRequestException;
 import hoon.football.joinrequest.exception.exceptions.DuplicateTeamJoinRequestException;
+import hoon.football.joinrequest.exception.exceptions.NotTeamLeaderException;
 import hoon.football.joinrequest.repository.TeamJoinRequestRepository;
 import hoon.football.joinrequest.service.TeamJoinRequestService;
 import hoon.football.member.domain.Member;
@@ -55,20 +56,21 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
         return joinRepository.findAllByTeam_IdAndStatus(teamId, TeamJoinRequestStatus.PENDING);
     }
 
-    // 팀장만 아래 2개 메서드 호출할수있게 수정
     @Override
-    public void acceptRequest(Long memberId, Long teamId) {
+    public void acceptRequest(Long memberId, Long teamId, Long loginMemberId) {
         Member member = findMember(memberId);
         Team team = findTeam(teamId);
 
+        validateCheckTeamLeader(loginMemberId, team);
         findRequestAndAcceptRequest(memberId, teamId, member, team);
     }
 
     @Override
-    public void rejectRequest(Long memberId, Long teamId) {
+    public void rejectRequest(Long memberId, Long teamId, Long loginMemberId) {
         Member member = findMember(memberId);
         Team team = findTeam(teamId);
 
+        validateCheckTeamLeader(loginMemberId, team);
         findRequestAndRejectRequest(memberId, teamId, member, team);
     }
 
@@ -108,7 +110,13 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
 
     private void findRequestAndRejectRequest(Long memberId, Long teamId, Member member, Team team) {
         findPendingrequestByTeam_IdAndMember_idAndStatus(teamId, memberId)
-                .reject(member, team);
+                .reject();
+    }
+
+    private static void validateCheckTeamLeader(Long loginMemberId, Team team) {
+        if ( !loginMemberId.equals(team.getLeaderMember().getId()) ) {
+            throw new NotTeamLeaderException("해당 팀 팀장이 아닙니다.");
+        }
     }
 
 }
