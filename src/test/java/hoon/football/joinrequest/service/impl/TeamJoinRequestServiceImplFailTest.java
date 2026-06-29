@@ -3,6 +3,7 @@ package hoon.football.joinrequest.service.impl;
 import hoon.football.joinrequest.domain.TeamJoinRequest;
 import hoon.football.joinrequest.domain.TeamJoinRequestStatus;
 import hoon.football.joinrequest.exception.exceptions.DuplicateTeamJoinRequestException;
+import hoon.football.joinrequest.exception.exceptions.NotTeamLeaderException;
 import hoon.football.joinrequest.service.TeamJoinRequestService;
 import hoon.football.member.domain.Member;
 import hoon.football.member.exception.exceptions.AlreadyJoinedTeamException;
@@ -109,6 +110,78 @@ public class TeamJoinRequestServiceImplFailTest {
         Assertions.assertThatThrownBy(() -> tjrService.createRequest(memberB.getId(), team.getId()))
                 .isInstanceOf(DuplicateTeamJoinRequestException.class)
                 .hasMessage("이미 신청한 팀입니다.");
+    }
+
+    // memberA 가 팀장이지만, 수락버튼 누른사람이 memberC 라고 가정
+    @Test
+    @DisplayName(value = "요청수락 실패 ( 수락버튼 누른 유저가 해당팀의 팀장이 아닌 경우_ 해당 팀 멤버도 아닌사람)")
+    void acceptRequest_fail_notTeamLeaderAndNotTeamMember() throws Exception {
+        // given
+        Member memberA = memberService.save(new Member("memberA", "1234"));
+        Member memberB = memberService.save(new Member("memberB", "1234"));
+        Member memberC = memberService.save(new Member("memberC", "1234"));
+        Team team = teamService.createTeam("teamA", memberA.getId()); // memberA -> leaderMember
+        tjrService.createRequest(memberB.getId(), team.getId()); // memberB -> teamA 에 가입신청.
+
+        // when && then || 팀장이 아닌, memberC -> 가입신청 수락을 누름
+        Assertions.assertThatThrownBy(() -> tjrService.acceptRequest(memberB.getId(), team.getId(), memberC.getId()))
+                .isInstanceOf(NotTeamLeaderException.class)
+                .hasMessage("해당 팀 팀장이 아닙니다.");
+    }
+
+    // memberA 가 팀장이지만, 수락버튼 누른사람이 memberC 라고 가정
+    @Test
+    @DisplayName(value = "요청수락 실패 ( 수락버튼 누른 유저가 해당팀의 팀장이 아닌 경우_ 해당 팀 멤버이지만, 팀장이 아님)")
+    void acceptRequest_fail_notTeamLeader() throws Exception {
+        // given
+        Member memberA = memberService.save(new Member("memberA", "1234"));
+        Member memberB = memberService.save(new Member("memberB", "1234"));
+        Member memberC = memberService.save(new Member("memberC", "1234"));
+        Team team = teamService.createTeam("teamA", memberA.getId()); // memberA -> leaderMember
+        tjrService.createRequest(memberB.getId(), team.getId()); // memberB -> teamA 에 가입신청.
+        tjrService.createRequest(memberC.getId(), team.getId()); // memberC -> teamA 에 가입신청.
+        tjrService.acceptRequest(memberC.getId(), team.getId(), memberA.getId()); // memberA -> memberC 가입신청 수락 -> memberC.team = teamA
+
+        // when && then || 팀장이 아닌, memberC -> 가입신청 수락을 누름
+        Assertions.assertThatThrownBy(() -> tjrService.acceptRequest(memberB.getId(), team.getId(), memberC.getId()))
+                .isInstanceOf(NotTeamLeaderException.class)
+                .hasMessage("해당 팀 팀장이 아닙니다.");
+    }
+
+    // memberA 가 팀장이지만, 수락버튼 누른사람이 memberC 라고 가정
+    @Test
+    @DisplayName(value = "요청거절 실패 ( 수락버튼 누른 유저가 해당팀의 팀장이 아닌 경우_ 해당 팀 멤버도 아닌사람)")
+    void rejectRequest_fail_notTeamLeaderAndNotTeamMember() throws Exception {
+        // given
+        Member memberA = memberService.save(new Member("memberA", "1234"));
+        Member memberB = memberService.save(new Member("memberB", "1234"));
+        Member memberC = memberService.save(new Member("memberC", "1234"));
+        Team team = teamService.createTeam("teamA", memberA.getId()); // memberA -> leaderMember
+        tjrService.createRequest(memberB.getId(), team.getId()); // memberB -> teamA 에 가입신청.
+
+        // when && then || 팀장이 아닌, memberC -> 가입신청 수락을 누름
+        Assertions.assertThatThrownBy(() -> tjrService.rejectRequest(memberB.getId(), team.getId(), memberC.getId()))
+                .isInstanceOf(NotTeamLeaderException.class)
+                .hasMessage("해당 팀 팀장이 아닙니다.");
+    }
+
+    // memberA 가 팀장이지만, 수락버튼 누른사람이 memberC 라고 가정
+    @Test
+    @DisplayName(value = "요청거절 실패 ( 수락버튼 누른 유저가 해당팀의 팀장이 아닌 경우_ 해당 팀 멤버이지만, 팀장이 아님)")
+    void rejectRequest_fail_notTeamLeader() throws Exception {
+        // given
+        Member memberA = memberService.save(new Member("memberA", "1234"));
+        Member memberB = memberService.save(new Member("memberB", "1234"));
+        Member memberC = memberService.save(new Member("memberC", "1234"));
+        Team team = teamService.createTeam("teamA", memberA.getId()); // memberA -> leaderMember
+        tjrService.createRequest(memberB.getId(), team.getId()); // memberB -> teamA 에 가입신청.
+        tjrService.createRequest(memberC.getId(), team.getId()); // memberC -> teamA 에 가입신청.
+        tjrService.acceptRequest(memberC.getId(), team.getId(), memberA.getId()); // memberA -> memberC 가입신청 수락 -> memberC.team = teamA
+
+        // when && then || 팀장이 아닌, memberC -> 가입신청 수락을 누름
+        Assertions.assertThatThrownBy(() -> tjrService.rejectRequest(memberB.getId(), team.getId(), memberC.getId()))
+                .isInstanceOf(NotTeamLeaderException.class)
+                .hasMessage("해당 팀 팀장이 아닙니다.");
     }
 
 
