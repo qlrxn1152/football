@@ -7,6 +7,7 @@ import hoon.football.member.dto.MemberSessionDto;
 import hoon.football.member.service.MemberService;
 import hoon.football.team.domain.Team;
 import hoon.football.team.dto.TeamEditDto;
+import hoon.football.team.dto.TeamListDto;
 import hoon.football.team.dto.TeamSaveDto;
 import hoon.football.team.service.TeamService;
 import hoon.football.web.SessionConst;
@@ -47,8 +48,12 @@ public class TeamController {
 
     @GetMapping("/teams")
     public String teamsForm(Model model) {
-        model.addAttribute("teams", teamService.findAll());
+        // id, teamName, rating, leaderMember ==> leaderMember -> member ... => LAZY ... => leaderMember -> leaderMemberUsername
+        List<TeamListDto> dtoTeams = teamService.findAll().stream()
+                .map(team -> new TeamListDto(team.getId(), team.getTeamName(), team.getRating(), team.getLeaderMember().getUsername()))
+                .toList();
 
+        model.addAttribute("teams", dtoTeams);
         return "teams/list";
     }
 

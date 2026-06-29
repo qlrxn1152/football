@@ -25,7 +25,6 @@
 <table border="1" th:if="${!#lists.isEmpty(teams)}">
   <thead>
   <tr>
-    <th>ID</th>
     <th>팀 이름</th>
     <th>레이팅</th>
     <th>팀장</th>
@@ -35,14 +34,13 @@
 
   <tbody>
   <tr th:each="team : ${teams}">
-    <td th:text="${team.id}">1</td>
     <td th:text="${team.teamName}">teamA</td>
     <td th:text="${team.rating}">1000</td>
-    <td th:text="${team.leaderMember.username}">userA</td>
+    <td th:text="${team.leaderMemberUsername}">userA</td>
     <td>
       <a th:href="@{/teams/{teamId}(teamId=${team.id})}"
          th:text="${team.teamName}">
-        팀 이름
+        팀 상세페이지
       </a>
     </td>
   </tr>
