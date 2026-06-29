@@ -16,4 +16,6 @@ public interface MemberService {
     List<Member> findAll();
 
     Member login(String username, String password);
+
+    List<Member> findByTeamId(Long teamId);
 }

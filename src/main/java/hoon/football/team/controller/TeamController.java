@@ -56,9 +56,11 @@ public class TeamController {
     @GetMapping("/teams/{teamId}")
     public String teamDetailForm(@PathVariable Long teamId, Model model) {
         Team findTeam = teamService.findDetailTeamByTeamId(teamId);
+        List<Member> members = memberService.findByTeamId(teamId);
         List<TeamJoinRequest> requests = teamJoinRequestService.findAllRequestsByTeamId(teamId);
 
         model.addAttribute("team", findTeam);
+        model.addAttribute("members", members);
         model.addAttribute("requests", requests);
         return "teams/detail";
     }

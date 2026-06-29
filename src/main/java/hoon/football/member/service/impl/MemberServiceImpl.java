@@ -66,6 +66,11 @@ public class MemberServiceImpl implements MemberService {
 
     }
 
+    @Override
+    public List<Member> findByTeamId(Long teamId) {
+        return repository.findByTeamId(teamId);
+    }
+
 
     private void validateMemberSave(Member member) {
         // 아이디 길이 조건을 충족하지못한다면, 가입실패 ( 최소 4글자 ~ 최대 10글자까지만 허용. )
