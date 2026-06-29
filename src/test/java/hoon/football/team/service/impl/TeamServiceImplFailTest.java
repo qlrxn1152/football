@@ -158,8 +158,5 @@ class TeamServiceImplFailTest {
                 .hasMessage("팀 이름이 이미 존재합니다.");
     }
 
-    //TODO : 팀장 확인은, 팀원 구현이후 확인 !!!
-
-
 
 }

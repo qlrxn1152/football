@@ -43,7 +43,7 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
     }
 
     @Override
-    public TeamJoinRequest findByTeam_IdAndMember_idAndStatus(Long teamId, Long memberId) {
+    public TeamJoinRequest findPendingrequestByTeam_IdAndMember_idAndStatus(Long teamId, Long memberId) {
         return joinRepository.findByTeam_IdAndMember_idAndStatus(teamId, memberId, TeamJoinRequestStatus.PENDING)
                 .orElseThrow(() -> new NotFoundTeamJoinRequestException("요청을 조회하지 못했습니다."));
     }
@@ -55,7 +55,22 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
         return joinRepository.findAllByTeam_IdAndStatus(teamId, TeamJoinRequestStatus.PENDING);
     }
 
+    // 팀장만 아래 2개 메서드 호출할수있게 수정
+    @Override
+    public void acceptRequest(Long memberId, Long teamId) {
+        Member member = findMember(memberId);
+        Team team = findTeam(teamId);
 
+        findRequestAndAcceptRequest(memberId, teamId, member, team);
+    }
+
+    @Override
+    public void rejectRequest(Long memberId, Long teamId) {
+        Member member = findMember(memberId);
+        Team team = findTeam(teamId);
+
+        findRequestAndRejectRequest(memberId, teamId, member, team);
+    }
 
     // 비즈니스 로직
 
@@ -82,8 +97,18 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
         if (joinRepository.existsByMember_IdAndTeam_IdAndStatus(member.getId(), teamId, TeamJoinRequestStatus.PENDING)) {
             throw new DuplicateTeamJoinRequestException("이미 신청한 팀입니다.");
         }
-
     }
 
+    private void findRequestAndAcceptRequest(Long memberId, Long teamId, Member member, Team team) {
+        findPendingrequestByTeam_IdAndMember_idAndStatus(teamId, memberId)
+                .accept(member, team);
+
+        member.joinTeam(team);
+    }
+
+    private void findRequestAndRejectRequest(Long memberId, Long teamId, Member member, Team team) {
+        findPendingrequestByTeam_IdAndMember_idAndStatus(teamId, memberId)
+                .reject(member, team);
+    }
 
 }

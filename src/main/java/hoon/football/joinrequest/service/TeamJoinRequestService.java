@@ -11,7 +11,11 @@ public interface TeamJoinRequestService {
 
     TeamJoinRequest createRequest(Long memberId, Long teamId);
 
-    TeamJoinRequest findByTeam_IdAndMember_idAndStatus(Long teamId, Long memberId);
+    TeamJoinRequest findPendingrequestByTeam_IdAndMember_idAndStatus(Long teamId, Long memberId);
 
     List<TeamJoinRequest> findAllRequestsByTeamId (Long teamId);
+
+    void acceptRequest(Long memberId, Long teamId);
+
+    void rejectRequest(Long memberId, Long teamId);
 }

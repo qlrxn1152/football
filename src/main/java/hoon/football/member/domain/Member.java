@@ -5,6 +5,8 @@ import hoon.football.member.exception.exceptions.AlreadyJoinedTeamException;
 import hoon.football.team.domain.Team;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +37,8 @@ public class Member {
     private Team team;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, name = "team_role")
+    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @Column(name = "team_role", nullable = false, length = 20)
     private TeamRole teamRole;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
@@ -45,6 +48,7 @@ public class Member {
         this.username = username;
         this.password = password;
         this.rating = MEMBER_RATING_VALUE;
+        this.teamRole = TeamRole.NONE;
     }
 
     public void createTeamAsLeaderMember(Team team) {
