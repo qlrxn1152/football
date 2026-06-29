@@ -1,6 +1,7 @@
 package hoon.football.member.controller;
 
 import hoon.football.member.domain.Member;
+import hoon.football.member.dto.MemberListDto;
 import hoon.football.member.dto.MemberLoginDto;
 import hoon.football.member.dto.MemberSaveDto;
 import hoon.football.member.dto.MemberSessionDto;
@@ -16,6 +17,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @Slf4j
@@ -60,8 +64,12 @@ public class MemberController {
 
     @GetMapping("/members")
     public String membersForm(Model model) {
+        List<MemberListDto> dtoMembers = memberService.findAll().stream()
+                .map(member -> new MemberListDto(member.getId(), member.getUsername(), member.getRating()))
+                .toList();
 
-        model.addAttribute("members", memberService.findAll());
+        // id, username, rating
+        model.addAttribute("members", dtoMembers);
         return "members/list";
     }
 

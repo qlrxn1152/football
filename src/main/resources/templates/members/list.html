@@ -16,7 +16,6 @@
 <table border="1">
   <thead>
   <tr>
-    <th>ID</th>
     <th>Username</th>
     <th>Rating</th>
     <th>상세</th>
@@ -25,7 +24,6 @@
 
   <tbody>
   <tr th:each="member : ${members}">
-    <td th:text="${member.id}">1</td>
     <td th:text="${member.username}">userA</td>
     <td th:text="${member.rating}">1000</td>
     <td>
