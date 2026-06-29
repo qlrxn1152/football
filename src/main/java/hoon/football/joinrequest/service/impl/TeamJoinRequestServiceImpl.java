@@ -104,9 +104,8 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
 
     private void findRequestAndAcceptRequest(Long memberId, Long teamId, Member member, Team team) {
         findPendingrequestByTeam_IdAndMember_idAndStatus(teamId, memberId)
-                .accept(member, team);
-
-        member.joinTeam(team);
+                .accept(member, team); // status = ACCEPTED -> Team , Member 서로 양방향 매핑 ..
+        // accept -> member.joinTeam(team) 실행 -> Team , Member 서로 양방향 매핑 ..
     }
 
     private void findRequestAndRejectRequest(Long memberId, Long teamId, Member member, Team team) {
