@@ -8,13 +8,13 @@ import lombok.Setter;
 @NoArgsConstructor
 public class TeamListDto {
 
-    private Long id;
+    private Long teamId;
     private String teamName;
     private Integer rating;
     private String leaderMemberUsername;
 
-    public TeamListDto(Long id, String teamName, Integer rating, String leaderMemberUsername) {
-        this.id = id;
+    public TeamListDto(Long teamId, String teamName, Integer rating, String leaderMemberUsername) {
+        this.teamId = teamId;
         this.teamName = teamName;
         this.rating = rating;
         this.leaderMemberUsername = leaderMemberUsername;

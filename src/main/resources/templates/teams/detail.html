@@ -78,7 +78,7 @@
         </td>
         <td>
             <form th:action="@{/teams/{teamId}/join-requests/{requestMemberId}/accept(
-                    teamId=${team.id},
+                    teamId=${team.teamId},
                     requestMemberId=${request.requestMemberId}
                 )}"
                   method="post"
@@ -87,7 +87,7 @@
             </form>
 
             <form th:action="@{/teams/{teamId}/join-requests/{requestMemberId}/reject(
-                    teamId=${team.id},
+                    teamId=${team.teamId},
                     requestMemberId=${request.requestMemberId}
                 )}"
                   method="post"
@@ -101,7 +101,7 @@
     </tbody>
 </table>
 
-<form th:action="@{/teams/{teamId}/join-requests(teamId=${team.id})}"
+<form th:action="@{/teams/{teamId}/join-requests(teamId=${team.teamId})}"
       method="post">
     <button type="submit">가입 신청</button>
 </form>
@@ -113,7 +113,7 @@
     |
     <a th:href="@{/}">홈으로</a>
     |
-    <a th:href="@{/teams/{teamId}/edit(teamId=${team.id})}">
+    <a th:href="@{/teams/{teamId}/edit(teamId=${team.teamId})}">
         팀 이름 수정
     </a>
 
