@@ -8,11 +8,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class MemberSessionDto {
 
-    private Long id;
+    private Long loginMemberId;
     private String username;
 
-    public MemberSessionDto(Long id, String username) {
-        this.id = id;
+    public MemberSessionDto(Long loginMemberId, String username) {
+        this.loginMemberId = loginMemberId;
         this.username = username;
     }
 }

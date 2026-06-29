@@ -8,12 +8,12 @@ import lombok.Setter;
 @NoArgsConstructor
 public class MemberListDto {
 
-    private Long id;
+    private Long memberId;
     private String username;
     private Integer rating;
 
-    public MemberListDto(Long id, String username, Integer rating) {
-        this.id = id;
+    public MemberListDto(Long memberId, String username, Integer rating) {
+        this.memberId = memberId;
         this.username = username;
         this.rating = rating;
     }

@@ -27,7 +27,7 @@
     <td th:text="${member.username}">userA</td>
     <td th:text="${member.rating}">1000</td>
     <td>
-      <a th:href="@{/members/{memberId}(memberId=${member.id})}">
+      <a th:href="@{/members/{memberId}(memberId=${member.memberId})}">
         상세
       </a>
     </td>

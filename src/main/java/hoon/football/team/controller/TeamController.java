@@ -39,7 +39,7 @@ public class TeamController {
     // loginMember -> null 일 가능성도 체크
     @PostMapping("/teams/new")
     public String teamSave(@ModelAttribute TeamSaveDto teamSaveDto, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) MemberSessionDto loginMember, RedirectAttributes redirectAttributes) {
-        teamService.createTeam(teamSaveDto.getTeamName(), loginMember.getId());
+        teamService.createTeam(teamSaveDto.getTeamName(), loginMember.getLoginMemberId());
         redirectAttributes.addFlashAttribute("successMessage", "팀 생성 성공!");
 
         return "redirect:/teams";
@@ -75,7 +75,7 @@ public class TeamController {
 
     @PostMapping("/teams/{teamId}/edit")
     public String teamEdit(@PathVariable Long teamId, @ModelAttribute TeamEditDto teamEditDto, RedirectAttributes redirectAttributes, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) MemberSessionDto loginMember) {
-        teamService.updateTeamName(teamId, teamEditDto.getTeamName(), loginMember.getId());
+        teamService.updateTeamName(teamId, teamEditDto.getTeamName(), loginMember.getLoginMemberId());
         redirectAttributes.addFlashAttribute("successMessage", "팀 이름 변경 성공.");
         return "redirect:/teams";
     }

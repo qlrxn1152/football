@@ -29,7 +29,7 @@ public class TeamJoinRequestController {
 
     @PostMapping("/teams/{teamId}/join-requests")
     public String joinRequest(@PathVariable Long teamId, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) MemberSessionDto loginMember, RedirectAttributes redirectAttributes) {
-        teamJoinRequestService.createRequest(loginMember.getId(), teamId);
+        teamJoinRequestService.createRequest(loginMember.getLoginMemberId(), teamId);
         redirectAttributes.addFlashAttribute("successMessage", "가입신청 성공.");
         return "redirect:/teams/" + teamId;
     }
@@ -38,7 +38,7 @@ public class TeamJoinRequestController {
     // 팀장만 가능하게 ..
     @PostMapping("/teams/{teamId}/join-requests/{memberId}/accept")
     public String acceptRequest(@PathVariable Long teamId, @PathVariable Long memberId, RedirectAttributes redirectAttributes, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) MemberSessionDto loginMember) {
-        teamJoinRequestService.acceptRequest(memberId, teamId, loginMember.getId());
+        teamJoinRequestService.acceptRequest(memberId, teamId, loginMember.getLoginMemberId());
 
         redirectAttributes.addFlashAttribute("successMessage", "승인완료");
         return "redirect:/teams/" + teamId;
@@ -46,7 +46,7 @@ public class TeamJoinRequestController {
 
     @PostMapping("/teams/{teamId}/join-requests/{memberId}/reject")
     public String rejectRequest(@PathVariable Long teamId, @PathVariable Long memberId, RedirectAttributes redirectAttributes, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) MemberSessionDto loginMember) {
-        teamJoinRequestService.rejectRequest(memberId, teamId, loginMember.getId());
+        teamJoinRequestService.rejectRequest(memberId, teamId, loginMember.getLoginMemberId());
 
         redirectAttributes.addFlashAttribute("errorMessage", "승인거절");
         return "redirect:/teams/" + teamId;
