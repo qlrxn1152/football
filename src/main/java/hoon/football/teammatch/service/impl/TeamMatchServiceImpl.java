@@ -55,10 +55,20 @@ public class TeamMatchServiceImpl implements TeamMatchService {
         return teamMatchRepository.save(new TeamMatch(homeTeam));
     }
 
+    // homeTeam -> 매칭 등록 -> awayTeam -> 매칭 수락 요청 -> homeTeam -> 수락 (acceptTeamMatch ) / 거절
     @Override
-    public TeamMatch acceptTeamMatch(Long matchId, Long awayTeamId) {
+    public TeamMatch acceptTeamMatch(Long matchId, Long awayTeamId, Long loginMemberId) {
+        Member loginMember = memberRepository.findById(loginMemberId)
+                .orElseThrow(() -> new MemberNotFoundException("멤버 조회에 실패했습니다.")); // => homeTeam 팀장이여야함.
+
         TeamMatch teamMatch = teamMatchRepository.findById(matchId)
                 .orElseThrow(() -> new NotFoundTeamMatchException("매치 조회에 실패했습니다.")); // 등록되어져있는 매치조회
+
+        Team homeTeam = teamMatch.getHomeTeam();
+
+        if ( loginMember.getTeam() == null || !homeTeam.getLeaderMember().getId().equals(loginMember.getId()) ){
+            throw new NotTeamLeaderException("팀장이 아닙니다.");
+        }
 
         Team awayTeam = teamRepository.findById(awayTeamId)
                 .orElseThrow(() -> new TeamNotFoundException("원정팀 조회에 실패했습니다.")); // 원정팀 조회

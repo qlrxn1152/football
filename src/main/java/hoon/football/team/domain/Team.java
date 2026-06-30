@@ -51,5 +51,18 @@ public class Team {
     }
 
 
+    public void matchResultIsDraw() {
+        this.rating += 10;
+    }
+
+    public void matchResultIsWin() {
+        this.rating += 30;
+    }
+
+    public void matchResultIsLose() {
+        this.rating -= 30;
+    }
+
+
 
 }

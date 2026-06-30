@@ -1,5 +1,11 @@
 package hoon.football;
 
 public class TODOS {
-    // TODO : @SessionAttribute 사용하는 코드들 null 체크 필요
+
+
+    // TODO : TeamMatchController 구현 & 기능확인
+    // TODO : TeamMatchService -> 경기 결과 입력하는 로직들 구현
+
+    // TODO : TeamMatchResult -> 득점자 구현
+    // TODO : TeamMatchResult -> 나중에, 경기가 끝나고 일장시간이 지났음에도 결과를 입력하지않으면 어떻게할건지 ..
 }

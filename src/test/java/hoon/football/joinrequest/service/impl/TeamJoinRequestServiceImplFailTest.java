@@ -1,9 +1,6 @@
 package hoon.football.joinrequest.service.impl;
 
-import hoon.football.joinrequest.domain.TeamJoinRequest;
-import hoon.football.joinrequest.domain.TeamJoinRequestStatus;
 import hoon.football.joinrequest.exception.exceptions.DuplicateTeamJoinRequestException;
-import hoon.football.joinrequest.exception.exceptions.NotTeamLeaderException;
 import hoon.football.joinrequest.service.TeamJoinRequestService;
 import hoon.football.member.domain.Member;
 import hoon.football.member.exception.exceptions.AlreadyJoinedTeamException;
@@ -19,8 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

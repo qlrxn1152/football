@@ -2,9 +2,6 @@ package hoon.football.joinrequest.exception;
 
 import hoon.football.joinrequest.exception.exceptions.DuplicateTeamJoinRequestException;
 import hoon.football.joinrequest.exception.exceptions.NotFoundTeamJoinRequestException;
-import hoon.football.joinrequest.exception.exceptions.NotTeamLeaderException;
-import hoon.football.member.exception.exceptions.*;
-import hoon.football.team.exception.exceptions.TeamNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -28,12 +25,6 @@ public class TeamJoinRequestExceptionHandler {
         return "redirect:/teams";
     }
 
-    @ExceptionHandler(NotTeamLeaderException.class)
-    public String handleNotTeamLeaderException(NotTeamLeaderException e, RedirectAttributes redirectAttributes) {
-        log.error("[NotTeamLeader Exception] : {}", e.getMessage());
-        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-        return "redirect:/teams";
-    }
 
 
 

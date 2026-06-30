@@ -50,4 +50,8 @@ public class TeamMatch {
         this.status = TeamMatchStatus.EXPIRED;
     }
 
+    public void completeMatch() {
+        this.status = TeamMatchStatus.COMPLETED;
+    }
+
 }

@@ -7,7 +7,7 @@ public interface TeamMatchService {
 
     TeamMatch createTeamMatch(Long homeTeamId, Long loginMemberId);
 
-    TeamMatch acceptTeamMatch(Long matchId, Long awayTeamId);
+    TeamMatch acceptTeamMatch(Long matchId, Long awayTeamId, Long loginMemberId);
 
     TeamMatch expireTeamMatch(Long matchId);
 

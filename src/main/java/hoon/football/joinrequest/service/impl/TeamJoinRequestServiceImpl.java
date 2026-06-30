@@ -4,7 +4,6 @@ import hoon.football.joinrequest.domain.TeamJoinRequest;
 import hoon.football.joinrequest.domain.TeamJoinRequestStatus;
 import hoon.football.joinrequest.exception.exceptions.NotFoundTeamJoinRequestException;
 import hoon.football.joinrequest.exception.exceptions.DuplicateTeamJoinRequestException;
-import hoon.football.joinrequest.exception.exceptions.NotTeamLeaderException;
 import hoon.football.joinrequest.repository.TeamJoinRequestRepository;
 import hoon.football.joinrequest.service.TeamJoinRequestService;
 import hoon.football.member.domain.Member;
