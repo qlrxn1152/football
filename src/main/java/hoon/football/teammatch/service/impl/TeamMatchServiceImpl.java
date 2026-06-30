@@ -39,17 +39,17 @@ public class TeamMatchServiceImpl implements TeamMatchService {
         Member loginMember = memberRepository.findById(loginMemberId)
                 .orElseThrow(() -> new MemberNotFoundException("멤버 조회에 실패했습니다.")); // 멤버조회
 
+        Team homeTeam = teamRepository.findById(homeTeamId)
+                .orElseThrow(() -> new TeamNotFoundException("팀 조회에 실패했습니다.")); // 팀 조회 => 문제생길 가능성이 굉장히 적음.
+
         if (loginMember.getTeam() == null || !loginMember.getTeam().getId().equals(homeTeamId)){
             throw new NotTeamMemberException("해당 팀 멤버가 아닙니다.");
         } // 팀 멤버가 맞는지
 
         if (loginMember.getTeamRole() != TeamRole.LEADER) {
             throw new NotTeamLeaderException("팀 리더가 아닙니다.");
-        } // 팀장이 맞는지
+        } // 팀장이 맞는지 ==> 팀원이지만, 팀장이 아닌경우
 
-        // 팀 조회 => 문제생길 가능성이 굉장히 적음.
-        Team homeTeam = teamRepository.findById(homeTeamId)
-                .orElseThrow(() -> new TeamNotFoundException("팀 조회에 실패했습니다."));
 
         // 검증들 다 통과하면 매칭등록
         return teamMatchRepository.save(new TeamMatch(homeTeam));
@@ -61,7 +61,7 @@ public class TeamMatchServiceImpl implements TeamMatchService {
                 .orElseThrow(() -> new NotFoundTeamMatchException("매치 조회에 실패했습니다.")); // 등록되어져있는 매치조회
 
         Team awayTeam = teamRepository.findById(awayTeamId)
-                .orElseThrow(() -> new TeamNotFoundException("팀 조회에 실패했습니다.")); // 원정팀 조회
+                .orElseThrow(() -> new TeamNotFoundException("원정팀 조회에 실패했습니다.")); // 원정팀 조회
 
         // 검증들 다 통과하면 매칭수락 => 매치됨
         teamMatch.acceptMatch(awayTeam);
