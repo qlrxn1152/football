@@ -1,6 +1,7 @@
 package hoon.football.team.exception;
 
 import hoon.football.member.exception.exceptions.MemberLoginException;
+import hoon.football.team.exception.exceptions.NotTeamMemberException;
 import hoon.football.team.exception.exceptions.TeamCreateException;
 import hoon.football.team.exception.exceptions.TeamNameDuplicateException;
 import hoon.football.team.exception.exceptions.TeamNotFoundException;
@@ -30,6 +31,13 @@ public class TeamExceptionHandler {
     @ExceptionHandler(TeamNameDuplicateException.class)
     public String handlerTeamNameDuplicateException(TeamNameDuplicateException e, RedirectAttributes redirectAttributes) {
         log.error("[TeamNameDuplicate Exception] : {}", e.getMessage());
+        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        return "redirect:/";
+    }
+
+    @ExceptionHandler(NotTeamMemberException.class)
+    public String handlerNotTeamMemberException(NotTeamMemberException e, RedirectAttributes redirectAttributes) {
+        log.error("[NotTeamMember Exception] : {}", e.getMessage());
         redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         return "redirect:/";
     }

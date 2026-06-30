@@ -1,7 +1,13 @@
 package hoon.football.teammatch.service.impl;
 
+import hoon.football.member.domain.Member;
+import hoon.football.member.domain.TeamRole;
+import hoon.football.member.exception.exceptions.MemberLoginException;
+import hoon.football.member.exception.exceptions.MemberNotFoundException;
 import hoon.football.member.repository.MemberRepository;
 import hoon.football.team.domain.Team;
+import hoon.football.team.exception.exceptions.NotTeamLeaderException;
+import hoon.football.team.exception.exceptions.NotTeamMemberException;
 import hoon.football.team.exception.exceptions.TeamNotFoundException;
 import hoon.football.team.repository.TeamRepository;
 import hoon.football.teammatch.domain.TeamMatch;
@@ -15,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import javax.security.auth.login.LoginException;
 import java.time.LocalDateTime;
 
 @Service
@@ -28,22 +35,35 @@ public class TeamMatchServiceImpl implements TeamMatchService {
     private final TeamMatchRepository teamMatchRepository;
 
     @Override
-    public TeamMatch createTeamMatch(Long homeTeamId) {
-        // homeTeam 으로 들어온 team 객체랑, 로그인한 멤버의 team 이랑 같은지 확인도 해줘야하고, 팀장인지도 검증해줘야함.
+    public TeamMatch createTeamMatch(Long homeTeamId, Long loginMemberId) {
+        Member loginMember = memberRepository.findById(loginMemberId)
+                .orElseThrow(() -> new MemberNotFoundException("멤버 조회에 실패했습니다.")); // 멤버조회
+
+        if (loginMember.getTeam() == null || !loginMember.getTeam().getId().equals(homeTeamId)){
+            throw new NotTeamMemberException("해당 팀 멤버가 아닙니다.");
+        } // 팀 멤버가 맞는지
+
+        if (loginMember.getTeamRole() != TeamRole.LEADER) {
+            throw new NotTeamLeaderException("팀 리더가 아닙니다.");
+        } // 팀장이 맞는지
+
+        // 팀 조회 => 문제생길 가능성이 굉장히 적음.
         Team homeTeam = teamRepository.findById(homeTeamId)
                 .orElseThrow(() -> new TeamNotFoundException("팀 조회에 실패했습니다."));
 
+        // 검증들 다 통과하면 매칭등록
         return teamMatchRepository.save(new TeamMatch(homeTeam));
     }
 
     @Override
     public TeamMatch acceptTeamMatch(Long matchId, Long awayTeamId) {
         TeamMatch teamMatch = teamMatchRepository.findById(matchId)
-                .orElseThrow(() -> new NotFoundTeamMatchException("매치 조회에 실패했습니다."));
+                .orElseThrow(() -> new NotFoundTeamMatchException("매치 조회에 실패했습니다.")); // 등록되어져있는 매치조회
 
         Team awayTeam = teamRepository.findById(awayTeamId)
-                .orElseThrow(() -> new TeamNotFoundException("팀 조회에 실패했습니다."));
+                .orElseThrow(() -> new TeamNotFoundException("팀 조회에 실패했습니다.")); // 원정팀 조회
 
+        // 검증들 다 통과하면 매칭수락 => 매치됨
         teamMatch.acceptMatch(awayTeam);
 
         return teamMatch;
@@ -52,7 +72,6 @@ public class TeamMatchServiceImpl implements TeamMatchService {
 
     @Override
     public TeamMatch expireTeamMatch(Long matchId) {
-        LocalDateTime now = LocalDateTime.now();
         TeamMatch teamMatch = teamMatchRepository.findById(matchId)
                 .orElseThrow(() -> new NotFoundTeamMatchException("매치 조회에 실패했습니다."));
 
