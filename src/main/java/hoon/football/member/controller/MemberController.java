@@ -9,6 +9,7 @@ import hoon.football.member.exception.*;
 import hoon.football.member.service.MemberService;
 import hoon.football.web.SessionConst;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
@@ -42,23 +44,31 @@ public class MemberController {
     }
 
     @GetMapping("/login")
-    public String loginForm(@ModelAttribute MemberLoginDto memberLoginDto) {
+    public String loginForm(@RequestParam(name = "redirectURI", defaultValue = "/") String redirectURI, @ModelAttribute MemberLoginDto memberLoginDto, Model model) {
+        model.addAttribute("redirectURI", redirectURI);
+        log.info("[GET /login] redirectURI={}", redirectURI);
         return "members/login";
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute MemberLoginDto memberLoginDto, HttpServletRequest request) {
+    public String login(@ModelAttribute MemberLoginDto memberLoginDto, HttpServletRequest request, @RequestParam(name = "redirectURI", defaultValue = "/") String redirectURI) {
+        log.info("[POST /login] redirectURI={}", redirectURI);
         Member loginMember = memberService.login(memberLoginDto.getUsername(), memberLoginDto.getPassword());
 
         // 세션 전용 memberDto 저장
         request.getSession().setAttribute(SessionConst.LOGIN_MEMBER, new MemberSessionDto(loginMember.getId(), loginMember.getUsername()));
 
-        return "redirect:/";
+        return "redirect:" + redirectURI;
     }
 
     @PostMapping("/logout")
     public String logout(HttpServletRequest request) {
-        request.getSession(false).invalidate();
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            return "redirect:/";
+        }
+
+        session.invalidate();
         return "redirect:/";
     }
 
