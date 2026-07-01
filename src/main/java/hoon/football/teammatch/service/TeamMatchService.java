@@ -2,6 +2,9 @@ package hoon.football.teammatch.service;
 
 import hoon.football.team.domain.Team;
 import hoon.football.teammatch.domain.TeamMatch;
+import hoon.football.teammatch.domain.TeamMatchStatus;
+
+import java.util.List;
 
 public interface TeamMatchService {
 
@@ -10,5 +13,7 @@ public interface TeamMatchService {
     TeamMatch acceptTeamMatch(Long matchId, Long awayTeamId, Long loginMemberId);
 
     TeamMatch expireTeamMatch(Long matchId);
+
+    List<TeamMatch> findPendingMatch();
 
 }

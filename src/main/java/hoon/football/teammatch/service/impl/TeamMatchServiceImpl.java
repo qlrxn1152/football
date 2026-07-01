@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.security.auth.login.LoginException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -55,7 +56,7 @@ public class TeamMatchServiceImpl implements TeamMatchService {
         return teamMatchRepository.save(new TeamMatch(homeTeam));
     }
 
-    // homeTeam -> 매칭 등록 -> awayTeam -> 매칭 수락 요청 -> homeTeam -> 수락 (acceptTeamMatch ) / 거절
+    // homeTeam 팀장 -> 매칭 등록 -> awayTeam 팀장 -> 매칭 수락 요청 -> homeTeam 팀장 -> 수락 (acceptTeamMatch ) / 거절
     @Override
     public TeamMatch acceptTeamMatch(Long matchId, Long awayTeamId, Long loginMemberId) {
         Member loginMember = memberRepository.findById(loginMemberId)
@@ -93,6 +94,11 @@ public class TeamMatchServiceImpl implements TeamMatchService {
         }
 
         return teamMatch;
+    }
+
+    @Override
+    public List<TeamMatch> findPendingMatch() {
+        return teamMatchRepository.findMatchesByStatus(TeamMatchStatus.PENDING);
     }
 
 

@@ -11,6 +11,7 @@ import hoon.football.member.exception.exceptions.AlreadyJoinedTeamException;
 import hoon.football.member.exception.exceptions.MemberNotFoundException;
 import hoon.football.member.repository.MemberRepository;
 import hoon.football.team.domain.Team;
+import hoon.football.team.exception.exceptions.NotTeamLeaderException;
 import hoon.football.team.exception.exceptions.TeamNotFoundException;
 import hoon.football.team.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
