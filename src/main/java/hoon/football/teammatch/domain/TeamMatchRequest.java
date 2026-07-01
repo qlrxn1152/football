@@ -15,6 +15,7 @@ public class TeamMatchRequest {
     @Column(name = "team_match_request_id")
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "away_team_id", nullable = false)
     private Team awayTeam;
 
