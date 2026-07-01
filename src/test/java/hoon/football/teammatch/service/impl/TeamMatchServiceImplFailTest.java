@@ -105,7 +105,7 @@ class TeamMatchServiceImplFailTest {
         TeamMatch match = teamMatchService.createTeamMatch(team.getId(), member.getId());
 
         // when && then
-        assertThatThrownBy(() -> teamMatchService.acceptTeamMatch(888L, teamB.getId()))
+        assertThatThrownBy(() -> teamMatchService.acceptTeamMatch(888L, teamB.getId(), member.getId()))
                 .isInstanceOf(NotFoundTeamMatchException.class)
                 .hasMessage("매치 조회에 실패했습니다.");
     }
@@ -123,7 +123,7 @@ class TeamMatchServiceImplFailTest {
         TeamMatch match = teamMatchService.createTeamMatch(team.getId(), member.getId());
 
         // when && then
-        assertThatThrownBy(() -> teamMatchService.acceptTeamMatch(match.getId(), 999L))
+        assertThatThrownBy(() -> teamMatchService.acceptTeamMatch(match.getId(), 999L, member.getId()))
                 .isInstanceOf(TeamNotFoundException.class)
                 .hasMessage("원정팀 조회에 실패했습니다.");
     }

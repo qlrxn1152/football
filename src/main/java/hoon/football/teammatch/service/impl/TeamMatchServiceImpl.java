@@ -80,7 +80,6 @@ public class TeamMatchServiceImpl implements TeamMatchService {
         return teamMatch;
     }
 
-
     @Override
     public TeamMatch expireTeamMatch(Long matchId) {
         TeamMatch teamMatch = teamMatchRepository.findById(matchId)
