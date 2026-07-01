@@ -11,6 +11,7 @@ import hoon.football.team.exception.exceptions.NotTeamMemberException;
 import hoon.football.team.exception.exceptions.TeamNotFoundException;
 import hoon.football.team.repository.TeamRepository;
 import hoon.football.teammatch.domain.TeamMatch;
+import hoon.football.teammatch.domain.TeamMatchRequest;
 import hoon.football.teammatch.domain.TeamMatchStatus;
 import hoon.football.teammatch.exception.exceptions.NotFoundTeamMatchException;
 import hoon.football.teammatch.repository.TeamMatchRepository;
@@ -56,10 +57,41 @@ public class TeamMatchServiceImpl implements TeamMatchService {
         return teamMatchRepository.save(new TeamMatch(homeTeam));
     }
 
+    @Override
+    public void requestTeamMatch(Long matchId, Long loginMemberId) {
+        // 요청버튼을 누르는사람은, 매치에 등록된 팀이랑 다른 팀 소속이여야함. => 즉, 요청버튼을 누르는사람은 홈팀에 소속된 사람이 아니여야함.
+        TeamMatch match = findMatchById(matchId);
+        Team homeTeam = match.getHomeTeam();
+
+        // 요청버튼을 누르는사람은? -> awayTeam .. ==> loginMember ..
+        Member requestMember = memberRepository.findById(loginMemberId)
+                .orElseThrow(() -> new MemberNotFoundException("회원 조회 실패"));
+        // => awayTeam 팀장이여야함.
+
+        if (requestMember.getTeam() == null) {
+            // 팀 없음 = > 통과 ㄴㄴ
+        }
+
+        if (requestMember.getTeam().equals(homeTeam)) {
+            // 홈팀에 소속된 사람이면안됨
+        }
+
+        if (requestMember.getTeamRole() != TeamRole.LEADER) {
+            // 팀장아님 = > 통과 ㄴㄴ
+        }
+
+        Team awayTeam = requestMember.getTeam();
+        TeamMatchRequest teamMatchRequest = new TeamMatchRequest(awayTeam);
+
+        // 위 검증들 통과 -> 홈팀 teamMatchRequests -> 어웨이팀 등록 ==> teamMatchRequests => 어떤팀들이 매칭요청을 했는지 확인가능한..
+        homeTeam.getTeamMatchRequests().add(teamMatchRequest);
+    }
+
+
     // homeTeam 팀장 -> 매칭 등록 -> awayTeam 팀장 -> 매칭 수락 요청 -> homeTeam 팀장 -> 수락 (acceptTeamMatch ) / 거절
     @Override
     public TeamMatch acceptTeamMatch(Long matchId, Long awayTeamId, Long loginMemberId) {
-        Member loginMember = memberRepository.findById(loginMemberId)
+        Member loginMember = memberRepository.findById(loginMemberId) // loginMemberId -> homeTeam LeaderMember Id
                 .orElseThrow(() -> new MemberNotFoundException("멤버 조회에 실패했습니다.")); // => homeTeam 팀장이여야함.
 
         TeamMatch teamMatch = teamMatchRepository.findById(matchId)
@@ -98,6 +130,12 @@ public class TeamMatchServiceImpl implements TeamMatchService {
     @Override
     public List<TeamMatch> findPendingMatch() {
         return teamMatchRepository.findMatchesByStatus(TeamMatchStatus.PENDING);
+    }
+
+    @Override
+    public TeamMatch findMatchById(Long id) {
+        return teamMatchRepository.findById(id)
+                .orElseThrow(() -> new NotFoundTeamMatchException("매치 조회에 실패했습니다."));
     }
 
 

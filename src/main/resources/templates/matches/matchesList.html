@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>매칭 목록</title>
+</head>
+<body>
+
+<h1>매칭 대기 팀 목록</h1>
+
+<div th:if="${#lists.isEmpty(pendingMatches)}">
+    <p>현재 등록된 매칭이 없습니다.</p>
+</div>
+
+<p th:if="${successMessage}" th:text="${successMessage}" style="color: green;">
+    성공 메시지
+</p>
+
+<table th:if="${!#lists.isEmpty(pendingMatches)}" border="1">
+    <thead>
+    <tr>
+        <th>팀 이름</th>
+        <th>팀 레이팅</th>
+        <th>팀장</th>
+        <th>--</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="match : ${pendingMatches}">
+        <td>
+            <a th:href="@{/teams/{teamId}(teamId=${match.homeTeamId})}"
+               th:text="${match.homeTeamName}">
+                팀 이름
+            </a>
+        </td>
+
+        <td th:text="${match.homeTeamRating}">
+            1000
+        </td>
+
+        <td th:text="${match.homeTeamLeaderMemberUsername}">
+            팀장 이름
+        </td>
+
+        <td>
+        <form th:action="@{/matches/{matchId}/accept(matchId=${match.matchId})}" method="post">
+            <button type="submit">매칭 요청</button>
+        </form>
+        </td>
+    </tr>
+
+    </tbody>
+</table>
+
+<a th:href="@{/teams}">팀 목록으로</a>
+
+</body>
+</html>

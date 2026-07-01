@@ -2,6 +2,7 @@ package hoon.football.team.domain;
 
 import hoon.football.joinrequest.domain.TeamJoinRequest;
 import hoon.football.member.domain.Member;
+import hoon.football.teammatch.domain.TeamMatchRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,6 +36,9 @@ public class Team {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "team")
     private List<TeamJoinRequest> teamJoinRequests = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "awayTeam")
+    private List<TeamMatchRequest> teamMatchRequests = new ArrayList<>();
 
     public Team(String teamName, Member leaderMember) {
         this.teamName = teamName;
