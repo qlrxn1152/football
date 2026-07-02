@@ -67,16 +67,7 @@ public class TeamController {
         List<TeamRequestMemberDto> requestsDto = requestToTeamRequestMemberDto(teamId);
 
         // 요청팀이름, 요청팀 점수, 요청팀 팀장 // 수락 , 거절 버튼 // homeTeam 에 들어온 요청들 ... => teamMatchRepository 에서 homeTeam = teamId 로 있는거 다 가지고오면됨
-        List<AcceptRequestDto> matchRequests = teamMatchRequestRepository.findByHomeTeamId(teamId) // => 해당팀에 있는 모든 요청들을 다 가지고옴 ...==> X => 대기중인 매칭들 ....... //// 파라미터에 matchId ?
-                .stream()
-                .map(matchRequest -> new AcceptRequestDto(
-                        matchRequest.getTeamMatch().getId(),
-                        matchRequest.getAwayTeam().getId(),
-                        matchRequest.getAwayTeam().getTeamName(),
-                        matchRequest.getAwayTeam().getRating(),
-                        matchRequest.getAwayTeam().getLeaderMember().getUsername())
-                )
-                .toList();
+        List<AcceptRequestDto> matchRequests = matchRequestToAcceptRequestDto(teamId);
 
         model.addAttribute("team", findTeamDto);
         model.addAttribute("members", membersDto);
@@ -84,6 +75,7 @@ public class TeamController {
         model.addAttribute("matchRequests", matchRequests);
         return "teams/detail";
     }
+
 
     @GetMapping("/teams/{teamId}/edit")
     public String teamEditForm(@PathVariable Long teamId, @ModelAttribute TeamEditDto teamEditDto) {
@@ -115,6 +107,19 @@ public class TeamController {
         Team findTeam = teamService.findDetailTeamByTeamId(teamId); // id, teamName, teamRating, teamLeaderMemberUsername, teamMatchRequests...
 
         return new TeamDetailDto(findTeam.getId(), findTeam.getTeamName(), findTeam.getRating(), findTeam.getLeaderMember().getUsername());
+    }
+
+    private @NonNull List<AcceptRequestDto> matchRequestToAcceptRequestDto(Long teamId) {
+        return teamMatchRequestRepository.findPendingMatchRequest(teamId, TeamMatchStatus.PENDING) // => 해당팀에 있는 모든 요청들을 다 가지고옴 ...==> X => 대기중인 매칭들 .......
+                .stream()
+                .map(matchRequest -> new AcceptRequestDto(
+                        matchRequest.getTeamMatch().getId(),
+                        matchRequest.getAwayTeam().getId(),
+                        matchRequest.getAwayTeam().getTeamName(),
+                        matchRequest.getAwayTeam().getRating(),
+                        matchRequest.getAwayTeam().getLeaderMember().getUsername())
+                )
+                .toList();
     }
 
 }

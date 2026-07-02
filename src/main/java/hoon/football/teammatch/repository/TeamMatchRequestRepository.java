@@ -11,4 +11,7 @@ public interface TeamMatchRequestRepository extends JpaRepository<TeamMatchReque
 
     List<TeamMatchRequest> findByHomeTeamId(Long homeTeamId);
 
+    @Query("select tmr from TeamMatchRequest tmr join TeamMatch tm on tmr.teamMatch.id = tm.id where tm.homeTeam.id = :homeTeamId and tm.status = :status")
+    List<TeamMatchRequest> findPendingMatchRequest(Long homeTeamId, TeamMatchStatus status);
+
 }

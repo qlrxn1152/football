@@ -57,7 +57,11 @@ public class TeamMatchController {
         TeamMatch teamMatch = teamMatchService.findMatchById(matchId);
         Member loginMember = memberService.findById(sessionMember.getLoginMemberId());
 
+        log.info("TEST!!");
+
         teamMatchService.acceptTeamMatchRequest(matchId, loginMember.getTeam().getId(), loginMember.getId()); // awayTeamId... -> loginMember TeamId
+
+        log.info("TEST!!!!!!!!");
         redirectAttributes.addFlashAttribute("successMessage", "매칭요청에 성공했습니다.");
 
         return "redirect:/matches";
