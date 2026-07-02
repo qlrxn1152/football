@@ -2,7 +2,6 @@ package hoon.football.teammatch.service.impl;
 
 import hoon.football.member.domain.Member;
 import hoon.football.member.domain.TeamRole;
-import hoon.football.member.exception.exceptions.MemberLoginException;
 import hoon.football.member.exception.exceptions.MemberNotFoundException;
 import hoon.football.member.repository.MemberRepository;
 import hoon.football.team.domain.Team;
@@ -13,6 +12,7 @@ import hoon.football.team.repository.TeamRepository;
 import hoon.football.teammatch.domain.TeamMatch;
 import hoon.football.teammatch.domain.TeamMatchRequest;
 import hoon.football.teammatch.domain.TeamMatchStatus;
+import hoon.football.teammatch.exception.exceptions.TeamMatchAcceptToSelfTeamException;
 import hoon.football.teammatch.exception.exceptions.NotFoundTeamMatchException;
 import hoon.football.teammatch.repository.TeamMatchRepository;
 import hoon.football.teammatch.repository.TeamMatchRequestRepository;
@@ -22,9 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
 
-import javax.security.auth.login.LoginException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -69,25 +67,12 @@ public class TeamMatchServiceImpl implements TeamMatchService {
                 .orElseThrow(() -> new MemberNotFoundException("멤버 조회하는데 실패했습니다."));
 
         // 로그인한 사람이 팀에 속해있는지
-        log.info("role = {} " + loginMember.getTeamRole());
         validateMemberToTeam(loginMember, awayTeam);
-
-        // 검증에서, 이미 요청한 팀은 다시요청할수없게 해줘야함 즉, 2번이상 같은매치에 요청 ㄴㄴ !
-        Optional<TeamMatchRequest> optTeamMatchRequest = teamMatchRequestRepository.findByTeamMatchIdAndAwayTeamId(matchId, awayTeamId);
-
-        if (optTeamMatchRequest.isPresent()) {
-            throw new NotFoundTeamMatchException("같은 매치에 요청을 보낼 수 없습니다.");
-        }
-
-        // 자기팀에는 요청불가
-
-
+        validateAcceptTeamMatchRequest(matchId, awayTeamId, homeTeam, awayTeam);
 
         // 검증들 통괴 -> 매칭 요청 생성
         return createMatchAcceptRequest(teamMatch, homeTeam, awayTeam);
     }
-
-
 
     // 매칭 수락
     @Override
@@ -168,6 +153,21 @@ public class TeamMatchServiceImpl implements TeamMatchService {
         teamMatchRepository.save(teamMatch);
         return teamMatch;
     }
+
+    private void validateAcceptTeamMatchRequest(Long matchId, Long awayTeamId, Team homeTeam, Team awayTeam) {
+        // 검증에서, 이미 요청한 팀은 다시요청할수없게 해줘야함 즉, 2번이상 같은매치에 요청 ㄴㄴ !
+        Optional<TeamMatchRequest> optTeamMatchRequest = teamMatchRequestRepository.findByTeamMatchIdAndAwayTeamId(matchId, awayTeamId);
+
+        if (optTeamMatchRequest.isPresent()) {
+            throw new NotFoundTeamMatchException("같은 매치에 요청을 보낼 수 없습니다.");
+        }
+
+        // 자기팀에는 요청불가
+        if (homeTeam.getId().equals(awayTeam.getId())) {
+            throw new TeamMatchAcceptToSelfTeamException("자신의 팀에는 매치요청을 보낼 수 없습니다.");
+        }
+    }
+
 
 
 }

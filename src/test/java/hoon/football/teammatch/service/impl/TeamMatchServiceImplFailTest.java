@@ -12,6 +12,7 @@ import hoon.football.team.exception.exceptions.TeamNotFoundException;
 import hoon.football.team.service.TeamService;
 import hoon.football.teammatch.domain.TeamMatch;
 import hoon.football.teammatch.exception.exceptions.NotFoundTeamMatchException;
+import hoon.football.teammatch.exception.exceptions.TeamMatchAcceptToSelfTeamException;
 import hoon.football.teammatch.service.TeamMatchService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -146,6 +147,45 @@ class TeamMatchServiceImplFailTest {
                 .isInstanceOf(NotFoundTeamMatchException.class)
                 .hasMessage("같은 매치에 요청을 보낼 수 없습니다.");
     }
+
+    @Test
+    @DisplayName(value = "자기팀에 매치요청 ( 팀원이 요청 )")
+    void matchRequestToSelfTeam_member() throws Exception {
+        // given
+        Member memberA = memberService.save(new Member("memberA", "1234"));
+        Member memberB = memberService.save(new Member("memberB", "1234"));
+
+        Team teamA = teamService.createTeam("teamA", memberA.getId());// memberA -> teamA
+        TeamJoinRequest joinRequest = teamJoinRequestService.createRequest(memberB.getId(), teamA.getId());// memberB -> teamA 에 가입요청.
+        joinRequest.accept(memberB, teamA); // memberA -> memberB teamA 에 가입 승인.
+
+        TeamMatch match = teamMatchService.createTeamMatch(teamA.getId(), memberA.getId()); // memberA , teamA -> 매칭등록
+
+        // when && then
+        assertThatThrownBy(() -> teamMatchService.acceptTeamMatchRequest(match.getId(), teamA.getId(), memberB.getId()))
+                .isInstanceOf(NotTeamLeaderException.class)
+                .hasMessage("팀장아닌데요.");
+    }
+
+    @Test
+    @DisplayName(value = "자기팀에 매치요청 ( 팀장이 요청 )")
+    void matchRequestToSelfTeam_leader() throws Exception {
+        // given
+        Member memberA = memberService.save(new Member("memberA", "1234"));
+        Member memberB = memberService.save(new Member("memberB", "1234"));
+
+        Team teamA = teamService.createTeam("teamA", memberA.getId());// memberA -> teamA
+        TeamJoinRequest joinRequest = teamJoinRequestService.createRequest(memberB.getId(), teamA.getId());// memberB -> teamA 에 가입요청.
+        joinRequest.accept(memberB, teamA); // memberA -> memberB teamA 에 가입 승인.
+
+        TeamMatch match = teamMatchService.createTeamMatch(teamA.getId(), memberA.getId()); // memberA , teamA -> 매칭등록
+
+        // when && then
+        assertThatThrownBy(() -> teamMatchService.acceptTeamMatchRequest(match.getId(), teamA.getId(), memberA.getId()))
+                .isInstanceOf(TeamMatchAcceptToSelfTeamException.class)
+                .hasMessage("자신의 팀에는 매치요청을 보낼 수 없습니다.");
+    }
+
 
 
 

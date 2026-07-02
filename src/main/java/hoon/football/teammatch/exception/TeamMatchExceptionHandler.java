@@ -1,8 +1,6 @@
 package hoon.football.teammatch.exception;
 
-import hoon.football.team.exception.exceptions.TeamCreateException;
-import hoon.football.team.exception.exceptions.TeamNameDuplicateException;
-import hoon.football.team.exception.exceptions.TeamNotFoundException;
+import hoon.football.teammatch.exception.exceptions.TeamMatchAcceptToSelfTeamException;
 import hoon.football.teammatch.exception.exceptions.NotFoundTeamMatchException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -19,6 +17,14 @@ public class TeamMatchExceptionHandler {
         redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         return "redirect:/";
     }
+
+    @ExceptionHandler(TeamMatchAcceptToSelfTeamException.class)
+    public String handleDuplicateTeamMatchAcceptRequestException(TeamMatchAcceptToSelfTeamException e, RedirectAttributes redirectAttributes) {
+        log.error("[DuplicateTeamMatchAcceptRequest Exception] : {}", e.getMessage());
+        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        return "redirect:/";
+    }
+
 
 
 
