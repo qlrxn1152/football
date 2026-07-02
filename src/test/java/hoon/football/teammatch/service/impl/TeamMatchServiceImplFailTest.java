@@ -128,6 +128,25 @@ class TeamMatchServiceImplFailTest {
                 .hasMessage("원정팀 조회에 실패했습니다.");
     }
 
+    @Test
+    @DisplayName(value = "같은매치에 중복요청")
+    void duplicate_matchRequest() throws Exception {
+        // given
+        Member memberA = memberService.save(new Member("memberA", "1234"));
+        Member memberB = memberService.save(new Member("memberB", "1234"));
+
+        Team teamA = teamService.createTeam("teamA", memberA.getId());// memberA -> teamA
+        Team teamB = teamService.createTeam("teamB", memberB.getId()); // memberB -> teamB
+
+        TeamMatch match = teamMatchService.createTeamMatch(teamA.getId(), memberA.getId()); // memberA , teamA -> 매칭등록
+        teamMatchService.acceptTeamMatchRequest(match.getId(), teamB.getId(), memberB.getId());
+
+        // when && then
+        assertThatThrownBy(() -> teamMatchService.acceptTeamMatchRequest(match.getId(), teamB.getId(), memberB.getId()))
+                .isInstanceOf(NotFoundTeamMatchException.class)
+                .hasMessage("같은 매치에 요청을 보낼 수 없습니다.");
+    }
+
 
 
 

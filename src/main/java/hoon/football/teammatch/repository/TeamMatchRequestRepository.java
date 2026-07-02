@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TeamMatchRequestRepository extends JpaRepository<TeamMatchRequest, Long> {
 
@@ -13,5 +14,7 @@ public interface TeamMatchRequestRepository extends JpaRepository<TeamMatchReque
 
     @Query("select tmr from TeamMatchRequest tmr join TeamMatch tm on tmr.teamMatch.id = tm.id where tm.homeTeam.id = :homeTeamId and tm.status = :status")
     List<TeamMatchRequest> findPendingMatchRequest(Long homeTeamId, TeamMatchStatus status);
+
+    Optional<TeamMatchRequest> findByTeamMatchIdAndAwayTeamId(Long teamMatchId, Long awayTeamId);
 
 }

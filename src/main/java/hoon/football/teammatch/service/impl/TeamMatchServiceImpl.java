@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import javax.security.auth.login.LoginException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -71,7 +72,16 @@ public class TeamMatchServiceImpl implements TeamMatchService {
         log.info("role = {} " + loginMember.getTeamRole());
         validateMemberToTeam(loginMember, awayTeam);
 
-        // 검증에서, 이미 요청한 팀은 다시요청할수없게 해줘야함 즉, 2번이상 같은매치에 요청 ㄴㄴ
+        // 검증에서, 이미 요청한 팀은 다시요청할수없게 해줘야함 즉, 2번이상 같은매치에 요청 ㄴㄴ !
+        Optional<TeamMatchRequest> optTeamMatchRequest = teamMatchRequestRepository.findByTeamMatchIdAndAwayTeamId(matchId, awayTeamId);
+
+        if (optTeamMatchRequest.isPresent()) {
+            throw new NotFoundTeamMatchException("같은 매치에 요청을 보낼 수 없습니다.");
+        }
+
+        // 자기팀에는 요청불가
+
+
 
         // 검증들 통괴 -> 매칭 요청 생성
         return createMatchAcceptRequest(teamMatch, homeTeam, awayTeam);
@@ -79,7 +89,7 @@ public class TeamMatchServiceImpl implements TeamMatchService {
 
 
 
-    // 매칭수락 요청
+    // 매칭 수락
     @Override
     public TeamMatch acceptTeamMatch(Long matchId, Long awayTeamId, Long loginMemberId) {
         // homeTeam 팀장이 수락 ... ( 요청 보낸사람 -> awayTeam 팀장 )
@@ -143,6 +153,7 @@ public class TeamMatchServiceImpl implements TeamMatchService {
         if (!loginMember.getTeam().equals(team)) {
             throw new NotTeamMemberException("다른팀 소속이잖아");
         }
+
     }
 
     private @NonNull TeamMatchRequest createMatchAcceptRequest(TeamMatch teamMatch, Team homeTeam, Team awayTeam) {
