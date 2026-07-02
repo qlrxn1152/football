@@ -16,10 +16,21 @@ public class TeamMatchRequest {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "match_id", nullable = false)
+    private TeamMatch teamMatch;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "home_team_id", nullable = false)
+    private Team homeTeam;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "away_team_id", nullable = false)
     private Team awayTeam;
 
-    public TeamMatchRequest(Team awayTeam) {
+    public TeamMatchRequest(TeamMatch teamMatch, Team homeTeam, Team awayTeam) {
+        this.teamMatch = teamMatch;
+        this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
     }
+
 }

@@ -96,17 +96,24 @@
             </form>
         </td>
     </tr>
-
-
     </tbody>
 </table>
+
+<hr>
+
+<h3>매칭 요청 목록</h3>
+
+
+<hr>
+
+
 
 <form th:action="@{/teams/{teamId}/join-requests(teamId=${team.teamId})}"
       method="post">
     <button type="submit">가입 신청</button>
 </form>
 
-<form th:action="@{/teams/{teamId}/match-requests(teamId=${team.teamId})}"
+<form th:action="@{/teams/{teamId}/match/new(teamId=${team.teamId})}"
       method="post">
     <button type="submit">매칭 등록</button>
 </form>

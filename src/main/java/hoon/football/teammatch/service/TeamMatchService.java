@@ -18,6 +18,4 @@ public interface TeamMatchService {
 
     TeamMatch findMatchById(Long id);
 
-    void requestTeamMatch(Long matchId, Long loginMemberId);
-
 }

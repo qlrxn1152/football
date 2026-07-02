@@ -13,6 +13,7 @@ public class TeamDetailDto {
     private Integer rating;
     private String leaderMemberUsername;
 
+
     public TeamDetailDto(Long teamId, String teamName, Integer rating, String leaderMemberUsername) {
         this.teamId = teamId;
         this.teamName = teamName;

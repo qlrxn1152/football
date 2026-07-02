@@ -37,7 +37,7 @@ public class Team {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "team")
     private List<TeamJoinRequest> teamJoinRequests = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "awayTeam")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "")
     private List<TeamMatchRequest> teamMatchRequests = new ArrayList<>();
 
     public Team(String teamName, Member leaderMember) {

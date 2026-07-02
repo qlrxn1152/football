@@ -1,13 +1,12 @@
 package hoon.football.team.controller;
 
-import hoon.football.joinrequest.domain.TeamJoinRequest;
 import hoon.football.joinrequest.service.TeamJoinRequestService;
-import hoon.football.member.domain.Member;
 import hoon.football.member.dto.MemberSessionDto;
 import hoon.football.member.service.MemberService;
 import hoon.football.team.domain.Team;
 import hoon.football.team.dto.*;
 import hoon.football.team.service.TeamService;
+import hoon.football.teammatch.service.TeamMatchService;
 import hoon.football.web.SessionConst;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +27,7 @@ public class TeamController {
     private final TeamService teamService;
     private final MemberService memberService;
     private final TeamJoinRequestService teamJoinRequestService;
+    private final TeamMatchService teamMatchService;
 
     private final EntityManager em;
 
@@ -61,7 +61,6 @@ public class TeamController {
         List<TeamMemberDto> membersDto = memberToTeamMemberDto(teamId);
         List<TeamRequestMemberDto> requestsDto = requestToTeamRequestMemberDto(teamId);
 
-
         model.addAttribute("team", findTeamDto);
         model.addAttribute("members", membersDto);
         model.addAttribute("requests", requestsDto);
@@ -87,7 +86,6 @@ public class TeamController {
                 .map(request -> new TeamRequestMemberDto(request.getMember().getId(), request.getMember().getUsername(), request.getMember().getRating(), request.getRequestAt()))
                 .toList();
     }
-
     private @NonNull List<TeamMemberDto> memberToTeamMemberDto(Long teamId) {
         return memberService.findByTeamId(teamId)
                 .stream()
@@ -96,7 +94,8 @@ public class TeamController {
     }
 
     private @NonNull TeamDetailDto teamToTeamDetailDto(Long teamId) {
-        Team findTeam = teamService.findDetailTeamByTeamId(teamId); // id, teamName, teamRating, teamLeaderMemberUsername
+        Team findTeam = teamService.findDetailTeamByTeamId(teamId); // id, teamName, teamRating, teamLeaderMemberUsername, teamMatchRequests...
+
         return new TeamDetailDto(findTeam.getId(), findTeam.getTeamName(), findTeam.getRating(), findTeam.getLeaderMember().getUsername());
     }
 

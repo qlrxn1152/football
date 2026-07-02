@@ -15,6 +15,7 @@ import hoon.football.teammatch.domain.TeamMatchRequest;
 import hoon.football.teammatch.domain.TeamMatchStatus;
 import hoon.football.teammatch.exception.exceptions.NotFoundTeamMatchException;
 import hoon.football.teammatch.repository.TeamMatchRepository;
+import hoon.football.teammatch.repository.TeamMatchRequestRepository;
 import hoon.football.teammatch.service.TeamMatchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,81 +36,17 @@ public class TeamMatchServiceImpl implements TeamMatchService {
     private final MemberRepository memberRepository;
     private final TeamRepository teamRepository;
     private final TeamMatchRepository teamMatchRepository;
+    private final TeamMatchRequestRepository teamMatchRequestRepository;
+
 
     @Override
     public TeamMatch createTeamMatch(Long homeTeamId, Long loginMemberId) {
-        Member loginMember = memberRepository.findById(loginMemberId)
-                .orElseThrow(() -> new MemberNotFoundException("멤버 조회에 실패했습니다.")); // 멤버조회
-
-        Team homeTeam = teamRepository.findById(homeTeamId)
-                .orElseThrow(() -> new TeamNotFoundException("팀 조회에 실패했습니다.")); // 팀 조회 => 문제생길 가능성이 굉장히 적음.
-
-        if (loginMember.getTeam() == null || !loginMember.getTeam().getId().equals(homeTeamId)){
-            throw new NotTeamMemberException("해당 팀 멤버가 아닙니다.");
-        } // 팀 멤버가 맞는지
-
-        if (loginMember.getTeamRole() != TeamRole.LEADER) {
-            throw new NotTeamLeaderException("팀 리더가 아닙니다.");
-        } // 팀장이 맞는지 ==> 팀원이지만, 팀장이 아닌경우
-
-
-        // 검증들 다 통과하면 매칭등록
-        return teamMatchRepository.save(new TeamMatch(homeTeam));
+        return null;
     }
 
-    @Override
-    public void requestTeamMatch(Long matchId, Long loginMemberId) {
-        // 요청버튼을 누르는사람은, 매치에 등록된 팀이랑 다른 팀 소속이여야함. => 즉, 요청버튼을 누르는사람은 홈팀에 소속된 사람이 아니여야함.
-        TeamMatch match = findMatchById(matchId);
-        Team homeTeam = match.getHomeTeam();
-
-        // 요청버튼을 누르는사람은? -> awayTeam .. ==> loginMember ..
-        Member requestMember = memberRepository.findById(loginMemberId)
-                .orElseThrow(() -> new MemberNotFoundException("회원 조회 실패"));
-        // => awayTeam 팀장이여야함.
-
-        if (requestMember.getTeam() == null) {
-            // 팀 없음 = > 통과 ㄴㄴ
-        }
-
-        if (requestMember.getTeam().equals(homeTeam)) {
-            // 홈팀에 소속된 사람이면안됨
-        }
-
-        if (requestMember.getTeamRole() != TeamRole.LEADER) {
-            // 팀장아님 = > 통과 ㄴㄴ
-        }
-
-        Team awayTeam = requestMember.getTeam();
-        TeamMatchRequest teamMatchRequest = new TeamMatchRequest(awayTeam);
-
-        // 위 검증들 통과 -> 홈팀 teamMatchRequests -> 어웨이팀 등록 ==> teamMatchRequests => 어떤팀들이 매칭요청을 했는지 확인가능한..
-        homeTeam.getTeamMatchRequests().add(teamMatchRequest);
-    }
-
-
-    // homeTeam 팀장 -> 매칭 등록 -> awayTeam 팀장 -> 매칭 수락 요청 -> homeTeam 팀장 -> 수락 (acceptTeamMatch ) / 거절
     @Override
     public TeamMatch acceptTeamMatch(Long matchId, Long awayTeamId, Long loginMemberId) {
-        Member loginMember = memberRepository.findById(loginMemberId) // loginMemberId -> homeTeam LeaderMember Id
-                .orElseThrow(() -> new MemberNotFoundException("멤버 조회에 실패했습니다.")); // => homeTeam 팀장이여야함.
-
-        TeamMatch teamMatch = teamMatchRepository.findById(matchId)
-                .orElseThrow(() -> new NotFoundTeamMatchException("매치 조회에 실패했습니다.")); // 등록되어져있는 매치조회
-
-        Team homeTeam = teamMatch.getHomeTeam();
-
-        if ( loginMember.getTeam() == null || !homeTeam.getLeaderMember().getId().equals(loginMember.getId()) ){
-            throw new NotTeamLeaderException("팀장이 아닙니다.");
-        }
-
-        Team awayTeam = teamRepository.findById(awayTeamId)
-                .orElseThrow(() -> new TeamNotFoundException("원정팀 조회에 실패했습니다.")); // 원정팀 조회
-
-        // 검증들 다 통과하면 매칭수락 => 매치됨
-        teamMatch.acceptMatch(awayTeam);
-
-        return teamMatch;
+        return null;
     }
 
     @Override

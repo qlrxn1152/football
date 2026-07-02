@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -17,11 +19,11 @@ public class TeamMatch {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "home_team_id")
+    @JoinColumn(name = "home_team_id", nullable = false)
     private Team homeTeam;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "away_team_id")
+    @JoinColumn(name = "away_team_id", nullable = true)
     private Team awayTeam;
 
     @Enumerated(EnumType.STRING)
@@ -31,8 +33,11 @@ public class TeamMatch {
     // 매칭 등록 시점
     private LocalDateTime requestAt;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "teamMatch")
+    private List<TeamMatchRequest> matchRequests = new ArrayList<>();
 
-    // homeTeam 파라미터를 받는 생성자를 호출 -> 매칭요청
+
+    // homeTeam 파라미터를 받는 생성자를 호출 -> 매칭등록 => awayTeam = null
     public TeamMatch(Team homeTeam) {
         this.homeTeam = homeTeam;
         this.status = TeamMatchStatus.PENDING;
