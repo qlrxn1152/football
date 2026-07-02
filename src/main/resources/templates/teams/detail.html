@@ -103,6 +103,39 @@
 
 <h3>매칭 요청 목록</h3>
 
+<table border="1">
+    <thead>
+    <tr>
+        <th>원정팀이름</th>
+        <th>원정팀 레이팅</th>
+        <th>원정팀 팀장이름</th>
+        <th>---</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:if="${#lists.isEmpty(matchRequests)}">
+        <td colspan="3">아직 매칭요청한 팀이 없습니다.</td>
+    </tr>
+
+    <tr th:each="matchRequest : ${matchRequests}">
+        <td th:text="${matchRequest.awayTeamName}">원정팀이름</td>
+        <td th:text="${matchRequest.awayTeamRating}">1000</td>
+        <td th:text="${matchRequest.awayTeamLeaderMemberUsername}">원정팀 팀장</td>
+        <td>
+            <form th:action="@{/matches/{matchId}/accept/{awayTeamId}(
+                    matchId=${matchRequest.matchId},
+                    awayTeamId=${matchRequest.awayTeamId}
+                )}"
+                  method="post"
+                  style="display:inline;">
+                <button type="submit">수락</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
 
 <hr>
 
@@ -113,7 +146,7 @@
     <button type="submit">가입 신청</button>
 </form>
 
-<form th:action="@{/teams/{teamId}/match/new(teamId=${team.teamId})}"
+<form th:action="@{/matches/new/{teamId}(teamId=${team.teamId})}"
       method="post">
     <button type="submit">매칭 등록</button>
 </form>

@@ -6,6 +6,10 @@ import hoon.football.member.service.MemberService;
 import hoon.football.team.domain.Team;
 import hoon.football.team.dto.*;
 import hoon.football.team.service.TeamService;
+import hoon.football.teammatch.domain.TeamMatchRequest;
+import hoon.football.teammatch.domain.TeamMatchStatus;
+import hoon.football.teammatch.dto.AcceptRequestDto;
+import hoon.football.teammatch.repository.TeamMatchRequestRepository;
 import hoon.football.teammatch.service.TeamMatchService;
 import hoon.football.web.SessionConst;
 import jakarta.persistence.EntityManager;
@@ -28,6 +32,7 @@ public class TeamController {
     private final MemberService memberService;
     private final TeamJoinRequestService teamJoinRequestService;
     private final TeamMatchService teamMatchService;
+    private final TeamMatchRequestRepository teamMatchRequestRepository;
 
     private final EntityManager em;
 
@@ -61,9 +66,22 @@ public class TeamController {
         List<TeamMemberDto> membersDto = memberToTeamMemberDto(teamId);
         List<TeamRequestMemberDto> requestsDto = requestToTeamRequestMemberDto(teamId);
 
+        // 요청팀이름, 요청팀 점수, 요청팀 팀장 // 수락 , 거절 버튼 // homeTeam 에 들어온 요청들 ... => teamMatchRepository 에서 homeTeam = teamId 로 있는거 다 가지고오면됨
+        List<AcceptRequestDto> matchRequests = teamMatchRequestRepository.findByHomeTeamId(teamId) // => 해당팀에 있는 모든 요청들을 다 가지고옴 ...==> X => 대기중인 매칭들 ....... //// 파라미터에 matchId ?
+                .stream()
+                .map(matchRequest -> new AcceptRequestDto(
+                        matchRequest.getTeamMatch().getId(),
+                        matchRequest.getAwayTeam().getId(),
+                        matchRequest.getAwayTeam().getTeamName(),
+                        matchRequest.getAwayTeam().getRating(),
+                        matchRequest.getAwayTeam().getLeaderMember().getUsername())
+                )
+                .toList();
+
         model.addAttribute("team", findTeamDto);
         model.addAttribute("members", membersDto);
         model.addAttribute("requests", requestsDto);
+        model.addAttribute("matchRequests", matchRequests);
         return "teams/detail";
     }
 

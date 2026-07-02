@@ -68,7 +68,10 @@ public class TeamMatchServiceImpl implements TeamMatchService {
                 .orElseThrow(() -> new MemberNotFoundException("멤버 조회하는데 실패했습니다."));
 
         // 로그인한 사람이 팀에 속해있는지
+        log.info("role = {} " + loginMember.getTeamRole());
         validateMemberToTeam(loginMember, awayTeam);
+
+        // 검증에서, 이미 요청한 팀은 다시요청할수없게 해줘야함 즉, 2번이상 같은매치에 요청 ㄴㄴ
 
         // 검증들 통괴 -> 매칭 요청 생성
         return createMatchAcceptRequest(teamMatch, homeTeam, awayTeam);
@@ -132,7 +135,7 @@ public class TeamMatchServiceImpl implements TeamMatchService {
         }
 
         // 로그인한 사람이 팀장이 맞는지
-        if ( !team.getLeaderMember().equals(loginMember) ) {
+        if (loginMember.getTeamRole() != TeamRole.LEADER) {
             throw new NotTeamLeaderException("팀장아닌데요.");
         }
 

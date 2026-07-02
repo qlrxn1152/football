@@ -16,7 +16,7 @@ public class TeamMatchRequest {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "match_id", nullable = false)
+    @JoinColumn(name = "team_match_id", nullable = false)
     private TeamMatch teamMatch;
 
     @ManyToOne(fetch = FetchType.LAZY)
