@@ -5,6 +5,7 @@ import hoon.football.member.service.MemberService;
 import hoon.football.team.domain.Team;
 import hoon.football.team.service.TeamService;
 import hoon.football.teammatch.domain.TeamMatch;
+import hoon.football.teammatch.domain.TeamMatchRequest;
 import hoon.football.teammatch.domain.TeamMatchStatus;
 import hoon.football.teammatch.service.TeamMatchService;
 import org.assertj.core.api.Assertions;
@@ -45,30 +46,53 @@ class TeamMatchServiceImplSuccessTest {
     }
 
     @Test
-    @DisplayName(value = "매칭 성공 _ (변경감지도 정상작동)")
-    void acceptMatch_success() throws Exception {
+    @DisplayName(value = "등록된 매칭에 수락요청 보냄 성공")
+    void matchAcceptRequest_success() throws Exception {
         // given
-        Member member = memberService.save(new Member("memberA", "1234"));
-        Team team = teamService.createTeam("teamA", member.getId());
+        Member memberA = memberService.save(new Member("memberA", "1234"));
         Member memberB = memberService.save(new Member("memberB", "1234"));
-        Team teamB = teamService.createTeam("teamB", memberB.getId());
 
-        TeamMatch match = teamMatchService.createTeamMatch(team.getId(), member.getId()); // memberA -> 매칭등록
+        Team teamA = teamService.createTeam("teamA", memberA.getId()); // memberA -> teamA 생성
+        Team teamB = teamService.createTeam("teamB", memberB.getId()); // memberB -> teamB 생성
+
+        TeamMatch match = teamMatchService.createTeamMatch(teamA.getId(), memberA.getId());// memberA , teamA -> 매칭등록
+
         // when
-        TeamMatch acceptMatch = teamMatchService.acceptTeamMatch(match.getId(), teamB.getId(), member.getId());
+        TeamMatchRequest matchRequest = teamMatchService.acceptTeamMatchRequest(match.getId(), teamB.getId(), memberB.getId());// memberA, teamB -> memberA, teamA 가 올린 매칭에 수락요청을 보냄
 
         // then
-        assertThat(match.getAwayTeam()).isNotNull();
-        assertThat(match.getHomeTeam()).isEqualTo(team);
-        assertThat(match.getAwayTeam()).isEqualTo(teamB);
-        assertThat(match.getStatus()).isEqualTo(TeamMatchStatus.MATCHED);
+        assertThat(match.getStatus()).isEqualTo(TeamMatchStatus.PENDING);
+        assertThat(match.getAwayTeam()).isNull();
+        assertThat(match.getHomeTeam()).isEqualTo(teamA);
+        assertThat(matchRequest.getTeamMatch()).isEqualTo(match);
+        assertThat(matchRequest.getHomeTeam()).isEqualTo(teamA);
+        assertThat(matchRequest.getAwayTeam()).isEqualTo(teamB);
+    }
 
-        /*
-        assertThat(acceptMatch.getAwayTeam()).isNotNull();
-        assertThat(acceptMatch.getHomeTeam()).isEqualTo(team);
-        assertThat(acceptMatch.getAwayTeam()).isEqualTo(teamB);
-        assertThat(acceptMatch.getStatus()).isEqualTo(TeamMatchStatus.MATCHED);
-         */
+    @Test
+    @DisplayName(value = "매칭 정상적으로 잡힘")
+    void matchAccept_success() throws Exception {
+        // given
+        Member memberA = memberService.save(new Member("memberA", "1234"));
+        Member memberB = memberService.save(new Member("memberB", "1234"));
+
+        Team teamA = teamService.createTeam("teamA", memberA.getId()); // memberA -> teamA 생성
+        Team teamB = teamService.createTeam("teamB", memberB.getId()); // memberB -> teamB 생성
+
+        TeamMatch match = teamMatchService.createTeamMatch(teamA.getId(), memberA.getId()); // memberA , teamA -> 매칭등록
+        TeamMatchRequest request = teamMatchService.acceptTeamMatchRequest(match.getId(), teamB.getId(), memberB.getId());// memberA, teamB -> memberA, teamA 가 올린 매칭에 수락요청을 보냄
+
+        // when
+        teamMatchService.acceptTeamMatch(match.getId(), teamB.getId(), memberA.getId()); // teamA, memberA 가 teamB, memberB 가 보낸 요청을 수락 -> 매칭잡힘
+        List<TeamMatch> pendingMatches = teamMatchService.findPendingMatch(); // matches ( 매치들 보여줄때 사용하는 메서드 )
+
+        // then
+        assertThat(match.getStatus()).isEqualTo(TeamMatchStatus.MATCHED);
+        assertThat(match.getAwayTeam()).isEqualTo(teamB);
+        assertThat(pendingMatches).hasSize(0);
+        assertThat(request.getTeamMatch()).isEqualTo(match);
+        assertThat(request.getHomeTeam()).isEqualTo(teamA);
+        assertThat(request.getAwayTeam()).isEqualTo(teamB);
     }
 
     @Test
@@ -91,7 +115,6 @@ class TeamMatchServiceImplSuccessTest {
         matchA.acceptMatch(teamB); // teamA < -> teamB 매칭 성공
 
         List<TeamMatch> pendingMatches = teamMatchService.findPendingMatch();
-
 
         // then
         assertThat(matchA.getStatus()).isEqualTo(TeamMatchStatus.MATCHED);

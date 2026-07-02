@@ -19,6 +19,7 @@ import hoon.football.teammatch.repository.TeamMatchRequestRepository;
 import hoon.football.teammatch.service.TeamMatchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,14 +40,60 @@ public class TeamMatchServiceImpl implements TeamMatchService {
     private final TeamMatchRequestRepository teamMatchRequestRepository;
 
 
+    // 매칭 등록
     @Override
     public TeamMatch createTeamMatch(Long homeTeamId, Long loginMemberId) {
-        return null;
+        Team homeTeam = teamRepository.findById(homeTeamId)
+                .orElseThrow(() -> new TeamNotFoundException("팀을 조회하는데 실패했습니다."));
+        Member loginMember = memberRepository.findById(loginMemberId)
+                .orElseThrow(() -> new MemberNotFoundException("멤버 조회하는데 실패했습니다."));
+        validateMemberToTeam(loginMember, homeTeam);
+
+        // 검증들 통과 -> 매칭 생성
+        return createTeamMatch(homeTeam);
     }
 
+    // 매칭 수락 요청 --> awayTeam 팀장이 신청 ( loginMember )
+    @Override
+    public TeamMatchRequest acceptTeamMatchRequest(Long matchId, Long awayTeamId, Long loginMemberId) {
+        TeamMatch teamMatch = teamMatchRepository.findById(matchId)
+                .orElseThrow(() -> new NotFoundTeamMatchException("팀매치 조회하는데 실패했습니다."));
+
+        Team homeTeam = teamMatch.getHomeTeam();
+
+        Team awayTeam = teamRepository.findById(awayTeamId)
+                .orElseThrow(() -> new TeamNotFoundException("팀을 조회하는데 실패했습니다."));
+
+        Member loginMember = memberRepository.findById(loginMemberId)
+                .orElseThrow(() -> new MemberNotFoundException("멤버 조회하는데 실패했습니다."));
+
+        // 로그인한 사람이 팀에 속해있는지
+        validateMemberToTeam(loginMember, awayTeam);
+
+        // 검증들 통괴 -> 매칭 요청 생성
+        return createMatchAcceptRequest(teamMatch, homeTeam, awayTeam);
+    }
+
+
+
+    // 매칭수락 요청
     @Override
     public TeamMatch acceptTeamMatch(Long matchId, Long awayTeamId, Long loginMemberId) {
-        return null;
+        // homeTeam 팀장이 수락 ... ( 요청 보낸사람 -> awayTeam 팀장 )
+        TeamMatch teamMatch = teamMatchRepository.findById(matchId)
+                .orElseThrow(() -> new NotFoundTeamMatchException("팀매치 조회하는데 실패했습니다."));
+
+        Team homeTeam = teamMatch.getHomeTeam();
+
+        Team awayTeam = teamRepository.findById(awayTeamId)
+                .orElseThrow(() -> new TeamNotFoundException("팀을 조회하는데 실패했습니다."));
+
+        Member loginMember = memberRepository.findById(loginMemberId)
+                .orElseThrow(() -> new MemberNotFoundException("멤버 조회하는데 실패했습니다."));
+
+
+        teamMatch.acceptMatch(awayTeam); // awayTeam 할당 , status = MATCHED 변경
+        return teamMatch;
     }
 
     @Override
@@ -73,6 +120,39 @@ public class TeamMatchServiceImpl implements TeamMatchService {
     public TeamMatch findMatchById(Long id) {
         return teamMatchRepository.findById(id)
                 .orElseThrow(() -> new NotFoundTeamMatchException("매치 조회에 실패했습니다."));
+    }
+
+
+
+    // 비즈니스 로직
+    private static void validateMemberToTeam(Member loginMember, Team team) {
+        // 로그인한 사람이 팀에 속해있는지
+        if (loginMember.getTeam() == null) {
+            throw new NotTeamMemberException("팀에 안속해있는데요");
+        }
+
+        // 로그인한 사람이 팀장이 맞는지
+        if ( !team.getLeaderMember().equals(loginMember) ) {
+            throw new NotTeamLeaderException("팀장아닌데요.");
+        }
+
+        // team 에 속해있지 않는사람인지
+        if (!loginMember.getTeam().equals(team)) {
+            throw new NotTeamMemberException("다른팀 소속이잖아");
+        }
+    }
+
+    private @NonNull TeamMatchRequest createMatchAcceptRequest(TeamMatch teamMatch, Team homeTeam, Team awayTeam) {
+        TeamMatchRequest matchRequest = new TeamMatchRequest(teamMatch, homeTeam, awayTeam);
+        homeTeam.getTeamMatchRequests().add(matchRequest);
+        teamMatchRequestRepository.save(matchRequest);
+        return matchRequest;
+    }
+
+    private @NonNull TeamMatch createTeamMatch(Team homeTeam) {
+        TeamMatch teamMatch = new TeamMatch(homeTeam);
+        teamMatchRepository.save(teamMatch);
+        return teamMatch;
     }
 
 
