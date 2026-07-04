@@ -13,6 +13,7 @@ import hoon.football.teammatch.domain.TeamMatch;
 import hoon.football.teammatch.domain.TeamMatchRequest;
 import hoon.football.teammatch.domain.TeamMatchResult;
 import hoon.football.teammatch.domain.TeamMatchStatus;
+import hoon.football.teammatch.exception.exceptions.NotFoundTeamMatchRequestException;
 import hoon.football.teammatch.exception.exceptions.TeamMatchAcceptToSelfTeamException;
 import hoon.football.teammatch.exception.exceptions.NotFoundTeamMatchException;
 import hoon.football.teammatch.repository.TeamMatchRepository;
@@ -38,7 +39,6 @@ public class TeamMatchServiceImpl implements TeamMatchService {
     private final TeamRepository teamRepository;
     private final TeamMatchRepository teamMatchRepository;
     private final TeamMatchRequestRepository teamMatchRequestRepository;
-
 
     // 매칭 등록
     @Override
@@ -81,19 +81,30 @@ public class TeamMatchServiceImpl implements TeamMatchService {
         // homeTeam 팀장이 수락 ... ( 요청 보낸사람 -> awayTeam 팀장 )
         TeamMatch teamMatch = teamMatchRepository.findById(matchId)
                 .orElseThrow(() -> new NotFoundTeamMatchException("팀매치 조회하는데 실패했습니다."));
-
         Team homeTeam = teamMatch.getHomeTeam();
-
         Team awayTeam = teamRepository.findById(awayTeamId)
                 .orElseThrow(() -> new TeamNotFoundException("팀을 조회하는데 실패했습니다."));
-
         Member loginMember = memberRepository.findById(loginMemberId)
                 .orElseThrow(() -> new MemberNotFoundException("멤버 조회하는데 실패했습니다."));
 
+        TeamMatchRequest request = teamMatchRequestRepository.findByTeamMatchIdAndAwayTeamId(matchId, awayTeamId)
+                .orElseThrow(() -> new NotFoundTeamMatchRequestException("팀 맻이 요청을 조회하지못했습니다."));
 
+        request.matched(); // request -> status : MATCHED
         teamMatch.acceptMatch(awayTeam); // awayTeam 할당 , status = MATCHED 변경
         return teamMatch;
     }
+
+    @Override
+    public void rejectTeamMatchRequest(Long matchId, Long awayTeamId) {
+        // TeamMatchREquest_id -> 매치요청 조회
+        TeamMatchRequest request = teamMatchRequestRepository.findByTeamMatchIdAndAwayTeamId(matchId, awayTeamId)
+                .orElseThrow(() -> new NotFoundTeamMatchRequestException("팀 매칭 요청을 조회하지못했습니다."));
+
+        // TeamMatchRequest_id 를 통해서 TeamMatchRequest 조회 -> status = REJECTED 로 변경.
+        request.rejected();
+    }
+
 
     @Override
     public TeamMatch expireTeamMatch(Long matchId) {
@@ -112,6 +123,9 @@ public class TeamMatchServiceImpl implements TeamMatchService {
 
     @Override
     public TeamMatch resultTeamMatch(Long matchId, Integer homeScore, Integer awayScore) {
+        // 검증도 필요 ...
+        // 팀장 입력맞음 ? 점수에 이상한값이 들어온건 아닌지 ?
+
         // 팀장이 점수를 입력하고, 결과입력 버튼을 누름 ->
         TeamMatch match = teamMatchRepository.findById(matchId)
                 .orElseThrow(() -> new NotFoundTeamMatchException("매치 조회 실패했습니다."));
@@ -122,17 +136,20 @@ public class TeamMatchServiceImpl implements TeamMatchService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TeamMatch> findPendingMatch() {
         return teamMatchRepository.findMatchesByStatus(TeamMatchStatus.PENDING);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public TeamMatch findMatchById(Long id) {
         return teamMatchRepository.findById(id)
                 .orElseThrow(() -> new NotFoundTeamMatchException("매치 조회에 실패했습니다."));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TeamMatch> findByTeamIdAndStatus(Long teamId, TeamMatchStatus status) {
         return teamMatchRepository.findByHomeTeamIdAndStatus(teamId, status);
     }

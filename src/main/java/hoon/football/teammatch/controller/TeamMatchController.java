@@ -74,13 +74,21 @@ public class TeamMatchController {
         return "redirect:/teams/" + homeTeamId;
     }
 
+    @PostMapping("/matches/{matchId}/reject/{awayTeamId}")
+    public String rejectMatchRequest(@PathVariable Long matchId, @PathVariable Long awayTeamId, RedirectAttributes redirectAttributes, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) MemberSessionDto sessionMember) {
+        Member loginMember = memberService.findById(sessionMember.getLoginMemberId());
+        teamMatchService.rejectTeamMatchRequest(matchId, awayTeamId);
+
+        return "redirect:/teams/" + loginMember.getTeam().getId(); // 검증듩을 통과하면 -> 로그인한 멤버가 홈팀 팀장인게 맞음.
+    }
+
     @GetMapping("/matches/{matchId}/result/{awayTeamId}")
     public String matchResultForm(@ModelAttribute MatchResultDto matchResultDto) {
         return "matches/matchResult";
     }
 
     @PostMapping("/matches/{matchId}/result/{awayTeamId}")
-    public String matchResult(@ModelAttribute MatchResultDto matchResultDto, @PathVariable Long matchId, @PathVariable Long awayTeamId) {
+    public String matchResult(@ModelAttribute MatchResultDto matchResultDto, @PathVariable Long matchId) {
         // 팀장이 점수를 입력하고, 결과입력 버튼을 누름 ->
         TeamMatch match = teamMatchService.findMatchById(matchId);
 

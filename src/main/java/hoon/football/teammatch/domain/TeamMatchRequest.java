@@ -27,10 +27,23 @@ public class TeamMatchRequest {
     @JoinColumn(name = "away_team_id", nullable = false)
     private Team awayTeam;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "match_request_status")
+    private TeamMatchRequestStatus matchRequestStatus;
+
     public TeamMatchRequest(TeamMatch teamMatch, Team homeTeam, Team awayTeam) {
         this.teamMatch = teamMatch;
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
+        this.matchRequestStatus = TeamMatchRequestStatus.PENDING;
+    }
+
+    public void matched() {
+        this.matchRequestStatus = TeamMatchRequestStatus.MATCHED;
+    }
+
+    public void rejected() {
+        this.matchRequestStatus = TeamMatchRequestStatus.REJECTED;
     }
 
 }

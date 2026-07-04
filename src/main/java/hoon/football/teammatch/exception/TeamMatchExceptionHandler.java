@@ -1,5 +1,6 @@
 package hoon.football.teammatch.exception;
 
+import hoon.football.teammatch.exception.exceptions.NotFoundTeamMatchRequestException;
 import hoon.football.teammatch.exception.exceptions.TeamMatchAcceptToSelfTeamException;
 import hoon.football.teammatch.exception.exceptions.NotFoundTeamMatchException;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,14 @@ public class TeamMatchExceptionHandler {
         redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         return "redirect:/";
     }
+
+    @ExceptionHandler(NotFoundTeamMatchRequestException.class)
+    public String handleNotFoundTeamMatchRequestException(NotFoundTeamMatchRequestException e, RedirectAttributes redirectAttributes) {
+        log.error("[NotFoundTeamMatchRequest Exception] : {}", e.getMessage());
+        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        return "redirect:/";
+    }
+
 
 
 

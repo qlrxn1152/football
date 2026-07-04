@@ -15,6 +15,8 @@ public interface TeamMatchService {
 
     TeamMatch acceptTeamMatch(Long matchId, Long awayTeamId, Long loginMemberId);
 
+    void rejectTeamMatchRequest(Long matchId, Long awayTeamId);
+
     TeamMatch expireTeamMatch(Long matchId);
 
     TeamMatch resultTeamMatch(Long matchId, Integer homeScore, Integer awayScore);

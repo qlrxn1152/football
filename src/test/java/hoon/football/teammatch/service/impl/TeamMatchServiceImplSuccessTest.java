@@ -6,6 +6,7 @@ import hoon.football.team.domain.Team;
 import hoon.football.team.service.TeamService;
 import hoon.football.teammatch.domain.TeamMatch;
 import hoon.football.teammatch.domain.TeamMatchRequest;
+import hoon.football.teammatch.domain.TeamMatchRequestStatus;
 import hoon.football.teammatch.domain.TeamMatchStatus;
 import hoon.football.teammatch.service.TeamMatchService;
 import org.assertj.core.api.Assertions;
@@ -67,6 +68,7 @@ class TeamMatchServiceImplSuccessTest {
         assertThat(matchRequest.getTeamMatch()).isEqualTo(match);
         assertThat(matchRequest.getHomeTeam()).isEqualTo(teamA);
         assertThat(matchRequest.getAwayTeam()).isEqualTo(teamB);
+        assertThat(matchRequest.getMatchRequestStatus()).isEqualTo(TeamMatchRequestStatus.PENDING);
     }
 
     @Test
@@ -93,6 +95,7 @@ class TeamMatchServiceImplSuccessTest {
         assertThat(request.getTeamMatch()).isEqualTo(match);
         assertThat(request.getHomeTeam()).isEqualTo(teamA);
         assertThat(request.getAwayTeam()).isEqualTo(teamB);
+        assertThat(request.getMatchRequestStatus()).isEqualTo(TeamMatchRequestStatus.MATCHED);
     }
 
     @Test
@@ -114,6 +117,25 @@ class TeamMatchServiceImplSuccessTest {
         assertThat(teamA.getRating()).isEqualTo(1030);
         assertThat(teamB.getRating()).isEqualTo(970);
         assertThat(match.getStatus()).isEqualTo(TeamMatchStatus.COMPLETED);
+    }
+
+    @Test
+    @DisplayName(value = "팀 매칭요청 거절")
+    void rejectTeamMatchRequest() throws Exception {
+        // given
+        Member memberA = memberService.save(new Member("memberA", "1234"));
+        Member memberB = memberService.save(new Member("memberB", "1234"));
+        Team teamA = teamService.createTeam("teamA", memberA.getId());
+        Team teamB = teamService.createTeam("teamB", memberB.getId());
+        TeamMatch match = teamMatchService.createTeamMatch(teamA.getId(), memberA.getId()); // teamA, memberA -> 매칭등록
+        TeamMatchRequest request = teamMatchService.acceptTeamMatchRequest(match.getId(), teamB.getId(), memberB.getId());// teamB, memberB -> teamA, memberA 가 등록한 매칭에 수락요청보냄.
+
+        // when
+        teamMatchService.rejectTeamMatchRequest(match.getId(), teamB.getId()); // memberA -> teamB 요청 거절 => 매칭안잡힘
+
+        // then
+        assertThat(match.getStatus()).isEqualTo(TeamMatchStatus.PENDING);
+        assertThat(request.getMatchRequestStatus()).isEqualTo(TeamMatchRequestStatus.REJECTED);
     }
 
     @Test
