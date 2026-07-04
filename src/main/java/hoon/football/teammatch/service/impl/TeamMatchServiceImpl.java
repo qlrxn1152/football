@@ -11,6 +11,7 @@ import hoon.football.team.exception.exceptions.TeamNotFoundException;
 import hoon.football.team.repository.TeamRepository;
 import hoon.football.teammatch.domain.TeamMatch;
 import hoon.football.teammatch.domain.TeamMatchRequest;
+import hoon.football.teammatch.domain.TeamMatchResult;
 import hoon.football.teammatch.domain.TeamMatchStatus;
 import hoon.football.teammatch.exception.exceptions.TeamMatchAcceptToSelfTeamException;
 import hoon.football.teammatch.exception.exceptions.NotFoundTeamMatchException;
@@ -110,6 +111,17 @@ public class TeamMatchServiceImpl implements TeamMatchService {
     }
 
     @Override
+    public TeamMatch resultTeamMatch(Long matchId, Integer homeScore, Integer awayScore) {
+        // 팀장이 점수를 입력하고, 결과입력 버튼을 누름 ->
+        TeamMatch match = teamMatchRepository.findById(matchId)
+                .orElseThrow(() -> new NotFoundTeamMatchException("매치 조회 실패했습니다."));
+
+        new TeamMatchResult(match, homeScore, awayScore); // 생성자 호출 -> 점수 계산해서 반영.
+
+        return match;
+    }
+
+    @Override
     public List<TeamMatch> findPendingMatch() {
         return teamMatchRepository.findMatchesByStatus(TeamMatchStatus.PENDING);
     }
@@ -120,6 +132,10 @@ public class TeamMatchServiceImpl implements TeamMatchService {
                 .orElseThrow(() -> new NotFoundTeamMatchException("매치 조회에 실패했습니다."));
     }
 
+    @Override
+    public List<TeamMatch> findByTeamIdAndStatus(Long teamId, TeamMatchStatus status) {
+        return teamMatchRepository.findByHomeTeamIdAndStatus(teamId, status);
+    }
 
 
     // 비즈니스 로직

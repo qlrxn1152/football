@@ -13,4 +13,6 @@ public interface TeamMatchRepository extends JpaRepository<TeamMatch, Long> {
 
     List<TeamMatch> findMatchesByStatus(TeamMatchStatus status);
 
+    List<TeamMatch> findByHomeTeamIdAndStatus(Long homeTeamId, TeamMatchStatus status);
+
 }

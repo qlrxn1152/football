@@ -5,6 +5,8 @@ import hoon.football.member.dto.MemberSessionDto;
 import hoon.football.member.service.MemberService;
 import hoon.football.team.service.TeamService;
 import hoon.football.teammatch.domain.TeamMatch;
+import hoon.football.teammatch.domain.TeamMatchResult;
+import hoon.football.teammatch.dto.MatchResultDto;
 import hoon.football.teammatch.dto.MatchesListDto;
 import hoon.football.teammatch.repository.TeamMatchRepository;
 import hoon.football.teammatch.service.TeamMatchService;
@@ -13,10 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -75,5 +74,18 @@ public class TeamMatchController {
         return "redirect:/teams/" + homeTeamId;
     }
 
+    @GetMapping("/matches/{matchId}/result/{awayTeamId}")
+    public String matchResultForm(@ModelAttribute MatchResultDto matchResultDto) {
+        return "matches/matchResult";
+    }
 
+    @PostMapping("/matches/{matchId}/result/{awayTeamId}")
+    public String matchResult(@ModelAttribute MatchResultDto matchResultDto, @PathVariable Long matchId, @PathVariable Long awayTeamId) {
+        // 팀장이 점수를 입력하고, 결과입력 버튼을 누름 ->
+        TeamMatch match = teamMatchService.findMatchById(matchId);
+
+        teamMatchService.resultTeamMatch(matchId, matchResultDto.getHomeScore(), matchResultDto.getAwayScore());
+
+        return "redirect:/teams/" + match.getHomeTeam().getId();
+    }
 }

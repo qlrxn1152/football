@@ -139,6 +139,39 @@
 
 <hr>
 
+<h3>매칭 목록</h3>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>원정팀이름</th>
+        <th>원정팀 레이팅</th>
+        <th>원정팀 팀장이름</th>
+        <th>---</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:if="${#lists.isEmpty(matches)}">
+        <td colspan="3">아직 진행중인 매칭이 없습니다.</td>
+    </tr>
+
+    <tr th:each="match : ${matches}">
+        <td th:text="${match.awayTeamName}">원정팀이름</td>
+        <td th:text="${match.awayTeamRating}">1000</td>
+        <td th:text="${match.awayTeamLeaderMemberUsername}">원정팀 팀장</td>
+        <td>
+            <a th:href="@{/matches/{matchId}/result/{awayTeamId}(
+                    matchId=${match.matchId},
+                    awayTeamId=${match.awayTeamId})}">
+                결과입력
+            </a>
+        </td>
+    </tr>
+
+    </tbody>
+</table>
+
 
 
 <form th:action="@{/teams/{teamId}/join-requests(teamId=${team.teamId})}"

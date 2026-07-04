@@ -17,8 +17,12 @@ public interface TeamMatchService {
 
     TeamMatch expireTeamMatch(Long matchId);
 
+    TeamMatch resultTeamMatch(Long matchId, Integer homeScore, Integer awayScore);
+
     List<TeamMatch> findPendingMatch();
 
     TeamMatch findMatchById(Long id);
+
+    List<TeamMatch> findByTeamIdAndStatus(Long teamId, TeamMatchStatus status);
 
 }

@@ -96,6 +96,27 @@ class TeamMatchServiceImplSuccessTest {
     }
 
     @Test
+    @DisplayName(value = "매치결과 입력 성공")
+    void resultTeamMatch() throws Exception {
+        // given
+        Member memberA = memberService.save(new Member("memberA", "1234"));
+        Member memberB = memberService.save(new Member("memberB", "1234"));
+        Team teamA = teamService.createTeam("teamA", memberA.getId());
+        Team teamB = teamService.createTeam("teamB", memberB.getId());
+        TeamMatch match = teamMatchService.createTeamMatch(teamA.getId(), memberA.getId()); // teamA, memberA -> 매칭등록
+        teamMatchService.acceptTeamMatchRequest(match.getId(), teamB.getId(), memberB.getId()); // teamB, memberB -> teamA, memberA 가 등록한 매칭에 수락요청보냄.
+        teamMatchService.acceptTeamMatch(match.getId(), teamB.getId(), memberA.getId()); // memberA -> teamB 요청 수락 => 매칭잡힘
+
+        // when
+        teamMatchService.resultTeamMatch(match.getId(), 3, 1); // teamA 3 : 1 teamB 로, teamA 팀장인 memberA 가 결과를 입력함.
+
+        // then
+        assertThat(teamA.getRating()).isEqualTo(1030);
+        assertThat(teamB.getRating()).isEqualTo(970);
+        assertThat(match.getStatus()).isEqualTo(TeamMatchStatus.COMPLETED);
+    }
+
+    @Test
     @DisplayName(value = "status = PENDING 인 매치들 조회 성공")
     void findPendingMatches_success() throws Exception {
         // given

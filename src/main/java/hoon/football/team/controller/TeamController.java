@@ -6,9 +6,11 @@ import hoon.football.member.service.MemberService;
 import hoon.football.team.domain.Team;
 import hoon.football.team.dto.*;
 import hoon.football.team.service.TeamService;
+import hoon.football.teammatch.domain.TeamMatch;
 import hoon.football.teammatch.domain.TeamMatchRequest;
 import hoon.football.teammatch.domain.TeamMatchStatus;
 import hoon.football.teammatch.dto.AcceptRequestDto;
+import hoon.football.teammatch.dto.MatchesDto;
 import hoon.football.teammatch.repository.TeamMatchRequestRepository;
 import hoon.football.teammatch.service.TeamMatchService;
 import hoon.football.web.SessionConst;
@@ -69,10 +71,24 @@ public class TeamController {
         // 요청팀이름, 요청팀 점수, 요청팀 팀장 // 수락 , 거절 버튼 // homeTeam 에 들어온 요청들 ... => teamMatchRepository 에서 homeTeam = teamId 로 있는거 다 가지고오면됨
         List<AcceptRequestDto> matchRequests = matchRequestToAcceptRequestDto(teamId);
 
+        // status = MATCHED 인 매치들 가지고오고, 결과를 입력할 수 있게 ..
+        List<MatchesDto> matches = teamMatchService.findByTeamIdAndStatus(teamId, TeamMatchStatus.MATCHED)
+                .stream()
+                .map(match -> new MatchesDto(
+                        match.getId(),
+                        match.getAwayTeam().getId(),
+                        match.getAwayTeam().getTeamName(),
+                        match.getAwayTeam().getRating(),
+                        match.getAwayTeam().getLeaderMember().getUsername())
+                )
+                .toList();
+
+
         model.addAttribute("team", findTeamDto);
         model.addAttribute("members", membersDto);
         model.addAttribute("requests", requestsDto);
         model.addAttribute("matchRequests", matchRequests);
+        model.addAttribute("matches", matches);
         return "teams/detail";
     }
 

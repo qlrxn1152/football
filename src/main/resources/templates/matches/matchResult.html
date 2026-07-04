@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+<form th:action="@{/matches/{matchId}/result/{awayTeamId}}" th:object="${matchResultDto}" method="post">
+  <input type="number" th:field="*{homeScore}" min="0" step="1" placeholder="홈팀 점수를 입력하세요">
+  <input type="number" th:field="*{awayScore}" min="0" step="1" placeholder="원정팀 점수를 입력하세요.">
+  <button type="submit">결과입력</button>
+</form>
+
+</body>
+</html>
