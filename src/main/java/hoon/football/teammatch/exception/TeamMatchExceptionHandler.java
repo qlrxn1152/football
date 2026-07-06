@@ -1,5 +1,6 @@
 package hoon.football.teammatch.exception;
 
+import hoon.football.teammatch.exception.exceptions.DuplicateTeamMatchRequestException;
 import hoon.football.teammatch.exception.exceptions.NotFoundTeamMatchRequestException;
 import hoon.football.teammatch.exception.exceptions.TeamMatchAcceptToSelfTeamException;
 import hoon.football.teammatch.exception.exceptions.NotFoundTeamMatchException;
@@ -33,6 +34,12 @@ public class TeamMatchExceptionHandler {
         return "redirect:/";
     }
 
+    @ExceptionHandler(DuplicateTeamMatchRequestException.class)
+    public String handleDuplicateTeamMatchRequestException(DuplicateTeamMatchRequestException e, RedirectAttributes redirectAttributes) {
+        log.error("[DuplicateTeamMatchRequest Exception] : {}", e.getMessage());
+        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        return "redirect:/";
+    }
 
 
 

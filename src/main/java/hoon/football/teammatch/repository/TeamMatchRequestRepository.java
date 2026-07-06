@@ -17,4 +17,7 @@ public interface TeamMatchRequestRepository extends JpaRepository<TeamMatchReque
 
     Optional<TeamMatchRequest> findByTeamMatchIdAndAwayTeamId(Long teamMatchId, Long awayTeamId);
 
+    boolean existsByTeamMatchIdAndAwayTeamId(Long teamMatchId, Long awayTeamId);
+
+
 }
