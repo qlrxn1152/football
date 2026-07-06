@@ -14,6 +14,7 @@ import hoon.football.team.domain.Team;
 import hoon.football.team.exception.exceptions.NotTeamLeaderException;
 import hoon.football.team.exception.exceptions.TeamNotFoundException;
 import hoon.football.team.repository.TeamRepository;
+import hoon.football.validator.teamjoinrequest.TeamJoinRequestValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
@@ -31,12 +32,13 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
     private final TeamJoinRequestRepository joinRepository;
     private final MemberRepository memberRepository;
     private final TeamRepository teamRepository;
+    private final TeamJoinRequestValidator teamJoinRequestValidator;
 
     @Override
     public TeamJoinRequest createRequest(Long memberId, Long teamId) {
         Member member = findMember(memberId);
         Team team = findTeam(teamId);
-        validateCreateRequest(teamId, member);
+        teamJoinRequestValidator.validateForCreateTeamJoinRequest(memberId, teamId);
 
         // 멤버가 팀에, 가입신청을 넣음
         TeamJoinRequest request = new TeamJoinRequest(member, team); // -> 요청생성
@@ -56,24 +58,21 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
         return joinRepository.findAllByTeam_IdAndStatus(teamId, TeamJoinRequestStatus.PENDING);
     }
 
-    // 테스트코드 확인할거 -> 1. 팀장만 가능한지 / 2. 수락하고나서 status = ACCEPTED 로 바뀌는지, / 3. 수락하고나서 팀에 멤버추가됐는지 / 4. 수락하고나서 멤버에 팀이 추가됐는지
     @Override
     public void acceptRequest(Long memberId, Long teamId, Long loginMemberId) {
         Member member = findMember(memberId);
         Team team = findTeam(teamId);
 
-        validateCheckTeamLeader(loginMemberId, team);
+        teamJoinRequestValidator.validateForCheckTeamLeader(team, loginMemberId);
         findRequestAndAcceptRequest(memberId, teamId, member, team);
     }
 
-    // 테스트코드 확인할거 -> 1. 팀장만 가능한지 / 2. 수락하고나서 status = REJECTED 로 바뀌는지 / 3. 거절하고나서 팀에 멤버 추가 안되는거 맞는지 / 4. 거절하고나서 멤버에 팀이 추가 안되는거 맞는지
     @Override
     public void rejectRequest(Long memberId, Long teamId, Long loginMemberId) {
-        Member member = findMember(memberId);
         Team team = findTeam(teamId);
 
-        validateCheckTeamLeader(loginMemberId, team);
-        findRequestAndRejectRequest(memberId, teamId, member, team);
+        teamJoinRequestValidator.validateForCheckTeamLeader(team, loginMemberId);
+        findRequestAndRejectRequest(memberId, teamId);
     }
 
     // 비즈니스 로직
@@ -87,36 +86,16 @@ public class TeamJoinRequestServiceImpl implements TeamJoinRequestService {
                 .orElseThrow(() -> new TeamNotFoundException("ID로, 팀을 조회하지 못했습니다."));
     }
 
-    private void validateCreateRequest(Long teamId, Member member) {
-        // 다른팀에 이미 가입되어져있는지 상태인지? 이미 신청한팀이 자신의 팀인경우 ?
-        if (member.getTeam() != null) { // 팀이 이미 있는경우
-            if (member.getTeam().getId().equals(teamId)) { // 자신의 팀에 가입신청한 경우
-                throw new AlreadyJoinedTeamException("자신의 팀에는 가입신청을 할 수 없습니다.");
-            }
-            throw new AlreadyJoinedTeamException("팀이 이미 존재합니다.");
-        }
-
-        // 이미 신청한 팀에 또 신청하는건 아닌지?
-        if (joinRepository.existsByMember_IdAndTeam_IdAndStatus(member.getId(), teamId, TeamJoinRequestStatus.PENDING)) {
-            throw new DuplicateTeamJoinRequestException("이미 신청한 팀입니다.");
-        }
-    }
-
     private void findRequestAndAcceptRequest(Long memberId, Long teamId, Member member, Team team) {
         findPendingrequestByTeam_IdAndMember_idAndStatus(teamId, memberId)
                 .accept(member, team); // status = ACCEPTED -> Team , Member 서로 양방향 매핑 ..
         // accept -> member.joinTeam(team) 실행 -> Team , Member 서로 양방향 매핑 ..
     }
 
-    private void findRequestAndRejectRequest(Long memberId, Long teamId, Member member, Team team) {
+    private void findRequestAndRejectRequest(Long memberId, Long teamId) {
         findPendingrequestByTeam_IdAndMember_idAndStatus(teamId, memberId)
                 .reject();
     }
 
-    private static void validateCheckTeamLeader(Long loginMemberId, Team team) {
-        if ( !loginMemberId.equals(team.getLeaderMember().getId()) ) {
-            throw new NotTeamLeaderException("해당 팀 팀장이 아닙니다.");
-        }
-    }
 
 }

@@ -4,11 +4,9 @@ import hoon.football.member.domain.Member;
 import hoon.football.member.exception.exceptions.AlreadyJoinedTeamException;
 import hoon.football.member.exception.exceptions.MemberNotFoundException;
 import hoon.football.member.repository.MemberRepository;
-import hoon.football.member.service.MemberService;
 import hoon.football.team.domain.Team;
 import hoon.football.team.exception.exceptions.*;
 import hoon.football.team.repository.TeamRepository;
-import hoon.football.team.service.TeamService;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
@@ -22,7 +20,7 @@ public class TeamValidator {
 
     /**
      * 팀 생성을 위한 검증로직들입니다.
-     * @return 모든 검증들을 통과하면, 팀생성을 요청한 멤버를 반환합니다.
+     * @return 모든 검증들을 통과하면, 팀을 생성하고, 팀생성을 요청한 멤버 객체를 반환합니다.
      */
     public Member validateForCreateTeam(Long memberId, String teamName) {
         Member member = validateAlreadyJoinTeamAndReturnMember(memberId);
@@ -31,13 +29,16 @@ public class TeamValidator {
         return member;
     }
 
+    /**
+     * 팀 이름 변경을 위한 검증로직들입니다.
+     * @return 모든 검증들을 통과하면, 팀 이름을 변경하고, 팀 객체를 반환합니다.
+     */
     public Team validateForUpdateTeamName(Long teamId, String newTeamName, Long leaderMemberId) {
         Team team = findTeam(teamId);
         checkTeamLeader(leaderMemberId, team);
         validateDuplicateTeamName(newTeamName);
 
         return team;
-
     }
 
 
@@ -56,14 +57,9 @@ public class TeamValidator {
         }
     }
 
-    /**
-     * 파라미터로, teamName 을 받고 이를 repository 에서 같은 teamName 을 가진 팀이 존재하는지 검증하는 로직.
-     * @return teamName 이 이미 존재하면 -> true / 존재하지않는다면 -> false
-     * @param teamName
-     */
     private void validateDuplicateTeamName(String teamName) {
         if (teamRepository.existsByTeamName(teamName)) {
-            throw new TeamNameDuplicateException("팀 이름이 이미 존재합니다.");
+            throw new TeamNameDuplicateException("팀 이름이 이미 존재합니다."); // 팀 이름이 이미 존재하는지 확인.
         }
     }
 

@@ -21,11 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequiredArgsConstructor
 public class TeamJoinRequestController {
 
-    private final TeamService teamService;
-    private final MemberService memberService;
     private final TeamJoinRequestService teamJoinRequestService;
-
-    private final EntityManager em;
 
     @PostMapping("/teams/{teamId}/join-requests")
     public String joinRequest(@PathVariable Long teamId, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) MemberSessionDto loginMember, RedirectAttributes redirectAttributes) {
@@ -33,7 +29,6 @@ public class TeamJoinRequestController {
         redirectAttributes.addFlashAttribute("successMessage", "가입신청 성공.");
         return "redirect:/teams/" + teamId;
     }
-
 
     // 팀장만 가능하게 ..
     @PostMapping("/teams/{teamId}/join-requests/{memberId}/accept")

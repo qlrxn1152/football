@@ -37,7 +37,7 @@ public class TeamJoinRequestServiceImplFailTest {
         Team team = teamService.createTeam("teamA", member.getId()); // memberA -> teamA 팀 생성
 
         // when && then
-        Assertions.assertThatThrownBy(() -> tjrService.createRequest(9999L, team.getId()))
+        Assertions.assertThatThrownBy(() -> tjrService.createRequest(9999L, team.getId())) // 존재하지 않는 멤버가 teamA 에 가입신청.
                 .isInstanceOf(MemberNotFoundException.class)
                 .hasMessage("[ID(pk)] 조회실패");
     }
@@ -81,11 +81,11 @@ public class TeamJoinRequestServiceImplFailTest {
         Team team = teamService.createTeam("teamA", member.getId()); // memberA -> teamA 팀 생성
 
         Member memberB = memberService.save(new Member("memberB", "1234"));
-        Team teamB = teamService.createTeam("teamB", memberB.getId());
+        Team teamB = teamService.createTeam("teamB", memberB.getId()); // memberB -> teamB 팀 생성
 
         // teamB 에 속해있는 memberB -> teamB 에 가입신청.
         // when && then
-        Assertions.assertThatThrownBy(() -> tjrService.createRequest(memberB.getId(), teamB.getId()))
+        Assertions.assertThatThrownBy(() -> tjrService.createRequest(memberB.getId(), teamB.getId())) // memberB -> teamB 에 가입신청.
                 .isInstanceOf(AlreadyJoinedTeamException.class)
                 .hasMessage("자신의 팀에는 가입신청을 할 수 없습니다.");
     }
