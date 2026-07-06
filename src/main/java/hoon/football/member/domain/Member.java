@@ -41,8 +41,16 @@ public class Member {
     @Column(name = "team_role", nullable = false, length = 20)
     private TeamRole teamRole;
 
+    // 어떤팀에 가입신청
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
     private List<TeamJoinRequest> requests = new ArrayList<>();
+
+
+
+
+
+
+
 
     public Member(String username, String password) {
         this.username = username;

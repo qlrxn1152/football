@@ -23,6 +23,9 @@ public class TeamMatchResult {
     private int homeScore;
     private int awayScore;
 
+
+
+
     // 해당 매치 결과 입력
     public TeamMatchResult(TeamMatch teamMatch, int homeScore, int awayScore) {
         this.teamMatch = teamMatch;
@@ -32,7 +35,6 @@ public class TeamMatchResult {
         teamMatch.completeMatch(); // status = COMPLETED
         checkScoreAndReflectMatchResult(teamMatch, homeScore, awayScore);
     }
-
 
     private static void checkScoreAndReflectMatchResult(TeamMatch teamMatch, int homeScore, int awayScore) {
         if (homeScore == awayScore) {

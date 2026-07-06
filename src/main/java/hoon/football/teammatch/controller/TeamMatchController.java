@@ -96,4 +96,5 @@ public class TeamMatchController {
 
         return "redirect:/teams/" + match.getHomeTeam().getId();
     }
+
 }

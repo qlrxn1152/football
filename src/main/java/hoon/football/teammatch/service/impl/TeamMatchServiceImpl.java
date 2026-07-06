@@ -19,6 +19,7 @@ import hoon.football.teammatch.exception.exceptions.NotFoundTeamMatchException;
 import hoon.football.teammatch.repository.TeamMatchRepository;
 import hoon.football.teammatch.repository.TeamMatchRequestRepository;
 import hoon.football.teammatch.service.TeamMatchService;
+import hoon.football.validation.TeamValidation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
@@ -88,7 +89,7 @@ public class TeamMatchServiceImpl implements TeamMatchService {
                 .orElseThrow(() -> new MemberNotFoundException("멤버 조회하는데 실패했습니다."));
 
         TeamMatchRequest request = teamMatchRequestRepository.findByTeamMatchIdAndAwayTeamId(matchId, awayTeamId)
-                .orElseThrow(() -> new NotFoundTeamMatchRequestException("팀 맻이 요청을 조회하지못했습니다."));
+                .orElseThrow(() -> new NotFoundTeamMatchRequestException("팀 매칭 요청을 조회하지못했습니다."));
 
         request.matched(); // request -> status : MATCHED
         teamMatch.acceptMatch(awayTeam); // awayTeam 할당 , status = MATCHED 변경
