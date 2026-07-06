@@ -1,42 +1,44 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>팀 이름 수정</title>
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
 </head>
 <body>
-
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<h1>팀 이름 수정</h1>
-
-<hr>
-
-<form th:action="@{/teams/{teamId}/edit(teamId=${teamId})}"
-      th:object="${teamEditDto}"
-      method="post">
-
-    <div>
-        <label for="teamName">팀 이름</label>
-        <input type="text"
-               id="teamName"
-               th:field="*{teamName}"
-               placeholder="수정할 팀 이름을 입력하세요">
+<main class="narrow-container">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">팀 이름 수정</h1>
+            <p class="page-description">변경할 팀 이름을 입력하세요.</p>
+        </div>
     </div>
 
-    <br>
+    <div class="card">
+        <form class="form"
+              th:action="@{/teams/{teamId}/edit(teamId=${teamId})}"
+              th:object="${teamEditDto}"
+              method="post">
 
-    <button type="submit">수정하기</button>
-</form>
+            <div class="form-group">
+                <label for="teamName">팀 이름</label>
+                <input class="form-control"
+                       type="text"
+                       id="teamName"
+                       th:field="*{teamName}"
+                       placeholder="수정할 팀 이름을 입력하세요">
+            </div>
 
-<hr>
-
-<div>
-    <a th:href="@{/teams/{teamId}(teamId=${teamId})}">팀 상세로 돌아가기</a>
-    |
-    <a th:href="@{/teams}">팀 목록으로</a>
-</div>
-
+            <div class="action-row">
+                <button type="submit" class="btn btn-primary">수정하기</button>
+                <a class="btn btn-secondary" th:href="@{/teams/{teamId}(teamId=${teamId})}">팀 상세</a>
+                <a class="btn btn-secondary" th:href="@{/teams}">팀 목록</a>
+            </div>
+        </form>
+    </div>
+</main>
 </body>
 </html>

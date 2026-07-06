@@ -1,54 +1,61 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>팀 목록</title>
-  <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <meta charset="UTF-8">
+    <title>팀 목록</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
 </head>
 <body>
-
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<h1>팀 목록</h1>
+<main class="container">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">팀 목록</h1>
+            <p class="page-description">등록된 팀을 확인하고 상세 페이지로 이동할 수 있습니다.</p>
+        </div>
 
-<a th:href="@{/teams/new}">팀 생성</a>
-<a th:href="@{/}">홈으로</a>
+        <div class="page-actions">
+            <a class="btn btn-primary" th:href="@{/teams/new}">팀 생성</a>
+            <a class="btn btn-secondary" th:href="@{/}">홈으로</a>
+        </div>
+    </div>
 
-<hr>
+    <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}">
+        성공 메시지
+    </div>
 
-<p th:if="${#lists.isEmpty(teams)}">
-  등록된 팀이 없습니다.
-</p>
+    <div class="empty-box" th:if="${#lists.isEmpty(teams)}">
+        등록된 팀이 없습니다.
+    </div>
 
-<p th:if="${successMessage}" th:text="${successMessage}" style="color: green;">
-  성공 메시지
-</p>
+    <div class="card" th:if="${!#lists.isEmpty(teams)}">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>팀 이름</th>
+                <th>레이팅</th>
+                <th>팀장</th>
+                <th>상세</th>
+            </tr>
+            </thead>
 
-
-<table border="1" th:if="${!#lists.isEmpty(teams)}">
-  <thead>
-  <tr>
-    <th>팀 이름</th>
-    <th>레이팅</th>
-    <th>팀장</th>
-    <th>상세</th>
-  </tr>
-  </thead>
-
-  <tbody>
-  <tr th:each="team : ${teams}">
-    <td th:text="${team.teamName}">teamA</td>
-    <td th:text="${team.rating}">1000</td>
-    <td th:text="${team.leaderMemberUsername}">userA</td>
-    <td>
-      <a th:href="@{/teams/{teamId}(teamId=${team.teamId})}"
-         th:text="${team.teamName}">
-        팀 상세페이지
-      </a>
-    </td>
-  </tr>
-  </tbody>
-</table>
-
+            <tbody>
+            <tr th:each="team : ${teams}">
+                <td th:text="${team.teamName}">teamA</td>
+                <td th:text="${team.rating}">1000</td>
+                <td th:text="${team.leaderMemberUsername}">userA</td>
+                <td>
+                    <a class="btn btn-secondary"
+                       th:href="@{/teams/{teamId}(teamId=${team.teamId})}">
+                        상세 보기
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
 </body>
 </html>

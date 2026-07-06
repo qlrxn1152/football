@@ -1,62 +1,66 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>매칭 목록</title>
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
 </head>
 <body>
-
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<h1>매칭 대기 팀 목록</h1>
+<main class="container">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">매칭 대기 팀 목록</h1>
+            <p class="page-description">현재 매칭을 기다리는 팀을 확인하고 요청을 보낼 수 있습니다.</p>
+        </div>
 
-<div th:if="${#lists.isEmpty(pendingMatches)}">
-    <p>현재 등록된 매칭이 없습니다.</p>
-</div>
+        <div class="page-actions">
+            <a class="btn btn-secondary" th:href="@{/teams}">팀 목록으로</a>
+        </div>
+    </div>
 
-<p th:if="${successMessage}" th:text="${successMessage}" style="color: green;">
-    성공 메시지
-</p>
+    <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}">
+        성공 메시지
+    </div>
 
-<table th:if="${!#lists.isEmpty(pendingMatches)}" border="1">
-    <thead>
-    <tr>
-        <th>팀 이름</th>
-        <th>팀 레이팅</th>
-        <th>팀장</th>
-        <th>--</th>
-    </tr>
-    </thead>
+    <div class="empty-box" th:if="${#lists.isEmpty(pendingMatches)}">
+        현재 등록된 매칭이 없습니다.
+    </div>
 
-    <tbody>
-    <tr th:each="match : ${pendingMatches}">
-        <td>
-            <a th:href="@{/teams/{teamId}(teamId=${match.homeTeamId})}"
-               th:text="${match.homeTeamName}">
-                팀 이름
-            </a>
-        </td>
+    <div class="card" th:if="${!#lists.isEmpty(pendingMatches)}">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>팀 이름</th>
+                <th>팀 레이팅</th>
+                <th>팀장</th>
+                <th>관리</th>
+            </tr>
+            </thead>
 
-        <td th:text="${match.homeTeamRating}">
-            1000
-        </td>
-
-        <td th:text="${match.homeTeamLeaderMemberUsername}">
-            팀장 이름
-        </td>
-
-        <td>
-        <form th:action="@{/matches/{matchId}/request(matchId=${match.matchId})}" method="post">
-            <button type="submit">매칭 요청</button>
-        </form>
-        </td>
-    </tr>
-
-    </tbody>
-</table>
-
-<a th:href="@{/teams}">팀 목록으로</a>
-
+            <tbody>
+            <tr th:each="match : ${pendingMatches}">
+                <td>
+                    <a th:href="@{/teams/{teamId}(teamId=${match.homeTeamId})}"
+                       th:text="${match.homeTeamName}">
+                        팀 이름
+                    </a>
+                </td>
+                <td th:text="${match.homeTeamRating}">1000</td>
+                <td th:text="${match.homeTeamLeaderMemberUsername}">팀장 이름</td>
+                <td>
+                    <form class="inline-form"
+                          th:action="@{/matches/{matchId}/request(matchId=${match.matchId})}"
+                          method="post">
+                        <button type="submit" class="btn btn-primary">매칭 요청</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
 </body>
 </html>

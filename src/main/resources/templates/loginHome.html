@@ -1,36 +1,36 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Football - 로그인 홈</title>
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
 </head>
 <body>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
+<main class="container">
+    <section class="home-hero">
+        <h1>Football</h1>
+        <p>
+            <strong th:text="${member.username}">userA</strong>
+            님 방문해주셔서 감사합니다.
+        </p>
 
-<h1>Football</h1>
+        <div class="grid" style="margin-top: 24px;">
+            <div class="stat-card">
+                <p class="stat-label">현재 레이팅 : <strong class="stat-value" th:text="${member.rating}">레이팅</strong></p>
+                <p class="stat-label">나의 팀 : <a th:href="@{/teams/{teamId}(teamId=${teamId})}" class="stat-value" th:text="${member.teamName}">팀이름</a></p>
+            </div>
+        </div>
 
-<p>
-    <strong th:text="${member.username}">userA</strong>
-    님 환영합니다.
-</p>
-
-<p>
-    현재 레이팅:
-    <span th:text="${member.rating}">1000</span>
-</p>
-
-<hr>
-
-<a th:href="@{/members}">회원 목록</a>
-<a th:href="@{/teams}">팀 목록</a>
-<a th:href="@{/teams/new}">팀 생성</a>
-<a th:href="@{/matches}">매치 조회</a>
-
-<form th:action="@{/logout}" method="post">
-    <button type="submit">로그아웃</button>
-</form>
-
+        <div class="action-row" style="margin-top: 24px;">
+            <a class="btn btn-primary" th:href="@{/teams}">팀 목록</a>
+            <a class="btn btn-secondary" th:href="@{/teams/new}">팀 생성</a>
+            <a class="btn btn-secondary" th:href="@{/matches}">매치 조회</a>
+            <a class="btn btn-secondary" th:href="@{/members}">회원 목록</a>
+        </div>
+    </section>
+</main>
 </body>
 </html>

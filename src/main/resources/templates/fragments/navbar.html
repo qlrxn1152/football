@@ -8,22 +8,22 @@
         <div class="nav-menu">
             <a th:href="@{/teams}">팀 목록</a>
             <a th:href="@{/matches}">매칭 목록</a>
-            <a th:href="@{/rankings/teams}">팀 랭킹 - 구현중 . . . </a>
+            <a th:href="@{/rankings/teams}">팀 랭킹 - 구현중 . . .</a>
             <a th:href="@{/rankings/members}">회원 랭킹 - 구현중 . . .</a>
             <a th:href="@{/mypage}">마이페이지 - 구현중 . . .</a>
         </div>
 
         <div class="nav-auth">
-            <!-- 로그인 안 한 상태 -->
             <th:block th:if="${session.loginMember == null}">
                 <a th:href="@{/login}">로그인</a>
                 <a th:href="@{/members/new}">회원가입</a>
             </th:block>
 
-            <!-- 로그인 한 상태 -->
             <th:block th:if="${session.loginMember != null}">
                 <span class="nav-username"
-                      th:text="|${session.loginMember.username}님 어서오세요.|"></span>
+                      th:text="|${session.loginMember.username}님 어서오세요.|">
+                    사용자님 어서오세요.
+                </span>
 
                 <form th:action="@{/logout}" method="post" class="logout-form">
                     <button type="submit">로그아웃</button>

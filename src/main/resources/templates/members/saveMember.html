@@ -1,19 +1,49 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>회원가입</title>
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
 </head>
 <body>
-
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<form th:action="@{/members/new}" th:object="${memberSaveDto}" method="post">
-    <input type="text" th:field="*{username}" placeholder="아이디를 입력하세요.">
-    <input type="password" th:field="*{password}" th:name="password" placeholder="비밀번호를 입력하세요.">
-    <button type="submit">회원가입</button>
-</form>
+<main class="narrow-container">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">회원가입</h1>
+            <p class="page-description">Football 서비스를 이용하기 위한 계정을 생성하세요.</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <form class="form" th:action="@{/members/new}" th:object="${memberSaveDto}" method="post">
+            <div class="form-group">
+                <label for="username">아이디</label>
+                <input class="form-control"
+                       type="text"
+                       id="username"
+                       th:field="*{username}"
+                       placeholder="아이디를 입력하세요">
+            </div>
+
+            <div class="form-group">
+                <label for="password">비밀번호</label>
+                <input class="form-control"
+                       type="password"
+                       id="password"
+                       th:field="*{password}"
+                       placeholder="비밀번호를 입력하세요">
+            </div>
+
+            <div class="action-row">
+                <button type="submit" class="btn btn-primary">회원가입</button>
+                <a class="btn btn-secondary" th:href="@{/login}">로그인</a>
+            </div>
+        </form>
+    </div>
+</main>
 
 </body>
 </html>

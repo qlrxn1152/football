@@ -1,19 +1,49 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-  <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <meta charset="UTF-8">
+    <title>경기 결과 입력</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
 </head>
 <body>
-
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<form th:action="@{/matches/{matchId}/result/{awayTeamId}}" th:object="${matchResultDto}" method="post">
-  <input type="number" th:field="*{homeScore}" min="0" step="1" placeholder="홈팀 점수를 입력하세요">
-  <input type="number" th:field="*{awayScore}" min="0" step="1" placeholder="원정팀 점수를 입력하세요.">
-  <button type="submit">결과입력</button>
-</form>
+<main class="narrow-container">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">경기 결과 입력</h1>
+            <p class="page-description">홈팀과 원정팀의 점수를 입력하세요.</p>
+        </div>
+    </div>
 
+    <div class="card">
+        <form class="form" th:object="${matchResultDto}" method="post">
+            <div class="form-group">
+                <label for="homeScore">홈팀 점수</label>
+                <input class="form-control"
+                       id="homeScore"
+                       type="number"
+                       th:field="*{homeScore}"
+                       min="0"
+                       step="1"
+                       placeholder="홈팀 점수를 입력하세요">
+            </div>
+
+            <div class="form-group">
+                <label for="awayScore">원정팀 점수</label>
+                <input class="form-control"
+                       id="awayScore"
+                       type="number"
+                       th:field="*{awayScore}"
+                       min="0"
+                       step="1"
+                       placeholder="원정팀 점수를 입력하세요">
+            </div>
+
+            <button type="submit" class="btn btn-primary">결과 입력</button>
+        </form>
+    </div>
+</main>
 </body>
 </html>

@@ -1,31 +1,44 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>팀 생성</title>
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
 </head>
 <body>
-
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<h1>팀 생성</h1>
-
-<p th:if="${errorMessage}" th:text="${errorMessage}" style="color: red;">
-    에러 메시지
-</p>
-
-<form th:action="@{/teams/new}" th:object="${teamSaveDto}" method="post">
-    <div>
-        <label for="teamName">팀 이름</label>
-        <input type="text" id="teamName" th:field="*{teamName}">
+<main class="narrow-container">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">팀 생성</h1>
+            <p class="page-description">팀 이름을 입력하면 로그인한 회원이 팀장으로 등록됩니다.</p>
+        </div>
     </div>
 
-    <button type="submit">팀 생성</button>
-</form>
+    <div class="alert alert-error" th:if="${errorMessage}" th:text="${errorMessage}">
+        에러 메시지
+    </div>
 
-<a th:href="@{/}">홈으로</a>
-<a th:href="@{/teams}">팀 목록</a>
+    <div class="card">
+        <form class="form" th:action="@{/teams/new}" th:object="${teamSaveDto}" method="post">
+            <div class="form-group">
+                <label for="teamName">팀 이름</label>
+                <input class="form-control"
+                       type="text"
+                       id="teamName"
+                       th:field="*{teamName}"
+                       placeholder="팀 이름을 입력하세요">
+            </div>
 
+            <div class="action-row">
+                <button type="submit" class="btn btn-primary">팀 생성</button>
+                <a class="btn btn-secondary" th:href="@{/teams}">팀 목록</a>
+                <a class="btn btn-secondary" th:href="@{/}">홈으로</a>
+            </div>
+        </form>
+    </div>
+</main>
 </body>
 </html>

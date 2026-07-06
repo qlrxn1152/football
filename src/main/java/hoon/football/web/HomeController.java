@@ -26,9 +26,10 @@ public class HomeController {
         }
 
         Member findMember = memberService.findById(loginMember.getLoginMemberId());
-        MemberHomeDto member = new MemberHomeDto(findMember.getUsername(), findMember.getRating());
+        MemberHomeDto member = new MemberHomeDto(findMember.getUsername(), findMember.getRating(), findMember.getTeam().getTeamName());
 
         model.addAttribute("member", member);
+        model.addAttribute("teamId", findMember.getTeam().getId());
         return "loginHome";
     }
 

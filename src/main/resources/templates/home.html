@@ -1,23 +1,26 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Football</title>
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
 </head>
 <body>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<ul>
-    <li>
-        <a th:href="@{/members/new}">회원가입</a>
-    </li>
-    <li>
-        <a th:href="@{/members}">회원 목록</a>
-    </li>
-    <li>
-        <a th:href="@{/login}">로그인</a>
-    </li>
-</ul>
+<main class="container">
+    <section class="home-hero">
+        <h1>Football</h1>
+        <p>팀을 만들고, 매칭을 등록하고, 경기 결과로 랭킹을 올려보세요.</p>
+
+        <div class="action-row" style="margin-top: 24px;">
+            <a class="btn btn-primary" th:href="@{/teams}">팀 둘러보기</a>
+            <a class="btn btn-secondary" th:href="@{/matches}">매칭 보기</a>
+            <a class="btn btn-secondary" th:href="@{/members/new}">회원가입</a>
+            <a class="btn btn-secondary" th:href="@{/login}">로그인</a>
+        </div>
+    </section>
+</main>
 </body>
 </html>
