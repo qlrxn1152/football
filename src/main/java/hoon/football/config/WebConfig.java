@@ -1,10 +1,6 @@
 package hoon.football.config;
 
-import hoon.football.member.repository.MemberRepository;
-import hoon.football.validation.MemberValidator;
 import hoon.football.web.interceptor.LoginInterceptor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

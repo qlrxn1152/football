@@ -1,4 +1,4 @@
-package hoon.football.validation;
+package hoon.football.validator.member;
 
 import hoon.football.member.exception.exceptions.DuplicateUsernameException;
 import hoon.football.member.exception.exceptions.MemberPasswordLengthException;

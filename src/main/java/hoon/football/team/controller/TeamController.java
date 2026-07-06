@@ -36,8 +36,6 @@ public class TeamController {
     private final TeamMatchService teamMatchService;
     private final TeamMatchRequestRepository teamMatchRequestRepository;
 
-    private final EntityManager em;
-
     @GetMapping("/teams/new")
     public String teamSaveForm(@ModelAttribute TeamSaveDto teamSaveDto) {
         return "teams/saveTeam";
@@ -54,9 +52,7 @@ public class TeamController {
 
     @GetMapping("/teams")
     public String teamsForm(Model model) {
-        List<TeamListDto> dtoTeams = teamService.findAll().stream()
-                .map(team -> new TeamListDto(team.getId(), team.getTeamName(), team.getRating(), team.getLeaderMember().getUsername()))
-                .toList();
+        List<TeamListDto> dtoTeams = teamsListDto();
 
         model.addAttribute("teams", dtoTeams);
         return "teams/list";
@@ -67,22 +63,8 @@ public class TeamController {
         TeamDetailDto findTeamDto = teamToTeamDetailDto(teamId);
         List<TeamMemberDto> membersDto = memberToTeamMemberDto(teamId);
         List<TeamRequestMemberDto> requestsDto = requestToTeamRequestMemberDto(teamId);
-
-        // 요청팀이름, 요청팀 점수, 요청팀 팀장 // 수락 , 거절 버튼 // homeTeam 에 들어온 요청들 ... => teamMatchRepository 에서 homeTeam = teamId 로 있는거 다 가지고오면됨
         List<AcceptRequestDto> matchRequests = matchRequestToAcceptRequestDto(teamId);
-
-        // status = MATCHED 인 매치들 가지고오고, 결과를 입력할 수 있게 ..
-        List<MatchesDto> matches = teamMatchService.findByTeamIdAndStatus(teamId, TeamMatchStatus.MATCHED)
-                .stream()
-                .map(match -> new MatchesDto(
-                        match.getId(),
-                        match.getAwayTeam().getId(),
-                        match.getAwayTeam().getTeamName(),
-                        match.getAwayTeam().getRating(),
-                        match.getAwayTeam().getLeaderMember().getUsername())
-                )
-                .toList();
-
+        List<MatchesDto> matches = findMatchByStatusMatchedAndResultDto(teamId);
 
         model.addAttribute("team", findTeamDto);
         model.addAttribute("members", membersDto);
@@ -91,7 +73,6 @@ public class TeamController {
         model.addAttribute("matches", matches);
         return "teams/detail";
     }
-
 
     @GetMapping("/teams/{teamId}/edit")
     public String teamEditForm(@PathVariable Long teamId, @ModelAttribute TeamEditDto teamEditDto) {
@@ -105,7 +86,18 @@ public class TeamController {
         return "redirect:/teams";
     }
 
-    // 비즈니스 로직
+
+
+
+    // DTO 변경 전용 메서드 ( domain -> dto )
+
+    private @NonNull List<TeamListDto> teamsListDto() {
+        return teamService.findAll()
+                .stream()
+                .map(team -> new TeamListDto(team.getId(), team.getTeamName(), team.getRating(), team.getLeaderMember().getUsername()))
+                .toList();
+    }
+
     private @NonNull List<TeamRequestMemberDto> requestToTeamRequestMemberDto(Long teamId) {
         return teamJoinRequestService.findAllRequestsByTeamId(teamId)
                 .stream()
@@ -134,6 +126,19 @@ public class TeamController {
                         matchRequest.getAwayTeam().getTeamName(),
                         matchRequest.getAwayTeam().getRating(),
                         matchRequest.getAwayTeam().getLeaderMember().getUsername())
+                )
+                .toList();
+    }
+
+    private List<MatchesDto> findMatchByStatusMatchedAndResultDto(Long teamId) {
+        return teamMatchService.findByTeamIdAndStatus(teamId, TeamMatchStatus.MATCHED)
+                .stream()
+                .map(match -> new MatchesDto(
+                        match.getId(),
+                        match.getAwayTeam().getId(),
+                        match.getAwayTeam().getTeamName(),
+                        match.getAwayTeam().getRating(),
+                        match.getAwayTeam().getLeaderMember().getUsername())
                 )
                 .toList();
     }

@@ -19,7 +19,6 @@ import hoon.football.teammatch.exception.exceptions.NotFoundTeamMatchException;
 import hoon.football.teammatch.repository.TeamMatchRepository;
 import hoon.football.teammatch.repository.TeamMatchRequestRepository;
 import hoon.football.teammatch.service.TeamMatchService;
-import hoon.football.validation.TeamValidation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;

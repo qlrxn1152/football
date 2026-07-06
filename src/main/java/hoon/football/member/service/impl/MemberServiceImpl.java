@@ -4,7 +4,7 @@ import hoon.football.member.domain.Member;
 import hoon.football.member.exception.exceptions.*;
 import hoon.football.member.repository.MemberRepository;
 import hoon.football.member.service.MemberService;
-import hoon.football.validation.MemberValidator;
+import hoon.football.validator.member.MemberValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,7 +28,7 @@ public class MemberServiceImpl implements MemberService {
         memberValidator.validateForSignUp(member.getUsername(), member.getPassword());
 
         String encodedPassword = passwordEncoder.encode(member.getPassword());
-        Member encodedMember = new Member(member.getUsername(), encodedPassword);
+        Member encodedMember = new Member(member.getUsername(), encodedPassword); // password 가, encoded 된 멤버객체를 저장.
 
         return repository.save(encodedMember);
     }
@@ -58,17 +58,24 @@ public class MemberServiceImpl implements MemberService {
     public Member login(String username, String password) {
         Member loginMember = findByUsername(username);
 
-        if (!passwordEncoder.matches(password, loginMember.getPassword())) {
-            throw new MemberLoginException("로그인에 실패했습니다.");
-        }
+        checkPasswordToEncoded(password, loginMember);
 
         return loginMember;
 
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Member> findByTeamId(Long teamId) {
         return repository.findByTeamId(teamId);
+    }
+
+
+
+    private void checkPasswordToEncoded(String password, Member loginMember) {
+        if (!passwordEncoder.matches(password, loginMember.getPassword())) {
+            throw new MemberLoginException("로그인에 실패했습니다.");
+        }
     }
 
 }

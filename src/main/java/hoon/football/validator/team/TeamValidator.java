@@ -1,4 +1,4 @@
-package hoon.football.validation;
+package hoon.football.validator.team;
 
 import hoon.football.member.domain.Member;
 import hoon.football.member.service.MemberService;
@@ -8,7 +8,7 @@ import hoon.football.team.service.TeamService;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class TeamValidation {
+public class TeamValidator {
 
     private final MemberService memberService;
     private final TeamService teamService;
