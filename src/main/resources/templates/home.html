@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
 </head>
 <body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
 <ul>
     <li>
         <a th:href="@{/members/new}">회원가입</a>

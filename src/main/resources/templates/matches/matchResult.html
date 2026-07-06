@@ -3,8 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>Title</title>
+  <link rel="stylesheet" th:href="@{/css/navbar.css}">
 </head>
 <body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <form th:action="@{/matches/{matchId}/result/{awayTeamId}}" th:object="${matchResultDto}" method="post">
   <input type="number" th:field="*{homeScore}" min="0" step="1" placeholder="홈팀 점수를 입력하세요">

@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
 </head>
 <body>
 
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <p th:if="${errorMessage}" th:text="${errorMessage}" style="color: red;">
     로그인 실패 메시지
