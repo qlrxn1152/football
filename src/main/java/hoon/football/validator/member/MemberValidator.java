@@ -19,6 +19,7 @@ public class MemberValidator {
         validateDuplicateUsername(username);
     }
 
+
     private void validateUsernameLength(String username) {
         if (username.length() < 4 || username.length() > 10) {
             throw new MemberUsernameLengthException("[USERNAME] 길이 조건 미충족");

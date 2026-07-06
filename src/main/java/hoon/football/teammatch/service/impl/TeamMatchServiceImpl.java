@@ -162,15 +162,16 @@ public class TeamMatchServiceImpl implements TeamMatchService {
             throw new NotTeamMemberException("팀에 안속해있는데요");
         }
 
-        // 로그인한 사람이 팀장이 맞는지
-        if (loginMember.getTeamRole() != TeamRole.LEADER) {
-            throw new NotTeamLeaderException("팀장아닌데요.");
-        }
-
         // team 에 속해있지 않는사람인지
         if (!loginMember.getTeam().equals(team)) {
             throw new NotTeamMemberException("다른팀 소속이잖아");
         }
+
+        // 해당 팀 인원은 맞지만, 팀장이 아님
+        if (loginMember.getTeam().equals(team) && loginMember.getTeamRole() != TeamRole.LEADER) {
+            throw new NotTeamLeaderException("팀장아닌데요.");
+        }
+
 
     }
 

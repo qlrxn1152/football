@@ -40,12 +40,12 @@ class TeamMatchServiceImplFailTest {
     void createMatch_fail_notFoundMember() throws Exception {
         // given
         Member member = memberService.save(new Member("memberA", "1234"));
-        Team team = teamService.createTeam("teamA", member.getId());
+        Team team = teamService.createTeam("teamA", member.getId()); // memberA -> teamA 생성
 
         // when && then
         assertThatThrownBy(() -> teamMatchService.createTeamMatch(team.getId(), 999L))
                 .isInstanceOf(MemberNotFoundException.class)
-                .hasMessage("멤버 조회에 실패했습니다.");
+                .hasMessage("멤버 조회하는데 실패했습니다.");
     }
 
     @Test
@@ -58,7 +58,7 @@ class TeamMatchServiceImplFailTest {
         // when && then
         assertThatThrownBy(() -> teamMatchService.createTeamMatch(333L, member.getId()))
                 .isInstanceOf(TeamNotFoundException.class)
-                .hasMessage("팀 조회에 실패했습니다.");
+                .hasMessage("팀을 조회하는데 실패했습니다.");
     }
 
     @Test
@@ -66,14 +66,14 @@ class TeamMatchServiceImplFailTest {
     void createMatch_fail_notJoinedMember() throws Exception {
         // given
         Member member = memberService.save(new Member("memberA", "1234"));
-        Team team = teamService.createTeam("teamA", member.getId());
-
         Member memberB = memberService.save(new Member("memberB", "1234"));
 
+        Team team = teamService.createTeam("teamA", member.getId());
+        Team teamB = teamService.createTeam("teamB", memberB.getId());
         // when && then
         assertThatThrownBy(() -> teamMatchService.createTeamMatch(team.getId(), memberB.getId())) // memberB -> teamA 매칭등록 -> 실패
                 .isInstanceOf(NotTeamMemberException.class)
-                .hasMessage("해당 팀 멤버가 아닙니다.");
+                .hasMessage("다른팀 소속이잖아");
     }
 
     @Test
@@ -84,13 +84,13 @@ class TeamMatchServiceImplFailTest {
         Team team = teamService.createTeam("teamA", member.getId());
 
         Member memberB = memberService.save(new Member("memberB", "1234"));
-        TeamJoinRequest request = teamJoinRequestService.createRequest(memberB.getId(), team.getId());
+        teamJoinRequestService.createRequest(memberB.getId(), team.getId());
         teamJoinRequestService.acceptRequest(memberB.getId(), team.getId(), member.getId()); // memberB -> teamA 가입성공
 
         // when && then
         assertThatThrownBy(() -> teamMatchService.createTeamMatch(team.getId(), memberB.getId())) // memberB -> teamA 매칭등록 -> 실패
                 .isInstanceOf(NotTeamLeaderException.class)
-                .hasMessage("팀 리더가 아닙니다.");
+                .hasMessage("팀장아닌데요.");
     }
 
     @Test
@@ -98,17 +98,17 @@ class TeamMatchServiceImplFailTest {
     void acceptMatch_fail_notFoundMatch() throws Exception {
         // given
         Member member = memberService.save(new Member("memberA", "1234"));
-        Team team = teamService.createTeam("teamA", member.getId());
-
         Member memberB = memberService.save(new Member("memberB", "1234"));
+
+        Team team = teamService.createTeam("teamA", member.getId());
         Team teamB = teamService.createTeam("teamB", memberB.getId());
 
-        TeamMatch match = teamMatchService.createTeamMatch(team.getId(), member.getId());
+        teamMatchService.createTeamMatch(team.getId(), member.getId()); // memberA -> 매치등록.
 
         // when && then
         assertThatThrownBy(() -> teamMatchService.acceptTeamMatch(888L, teamB.getId(), member.getId()))
                 .isInstanceOf(NotFoundTeamMatchException.class)
-                .hasMessage("매치 조회에 실패했습니다.");
+                .hasMessage("팀매치 조회하는데 실패했습니다.");
     }
 
     @Test
@@ -126,7 +126,7 @@ class TeamMatchServiceImplFailTest {
         // when && then
         assertThatThrownBy(() -> teamMatchService.acceptTeamMatch(match.getId(), 999L, member.getId()))
                 .isInstanceOf(TeamNotFoundException.class)
-                .hasMessage("원정팀 조회에 실패했습니다.");
+                .hasMessage("팀을 조회하는데 실패했습니다.");
     }
 
     @Test
