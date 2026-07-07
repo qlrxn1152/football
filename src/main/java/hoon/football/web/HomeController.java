@@ -5,6 +5,7 @@ import hoon.football.member.dto.MemberHomeDto;
 import hoon.football.member.dto.MemberLoginDto;
 import hoon.football.member.dto.MemberSessionDto;
 import hoon.football.member.service.MemberService;
+import hoon.football.team.domain.Team;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -26,10 +27,18 @@ public class HomeController {
         }
 
         Member findMember = memberService.findById(loginMember.getLoginMemberId());
-        MemberHomeDto member = new MemberHomeDto(findMember.getUsername(), findMember.getRating(), findMember.getTeam().getTeamName()); // 여기서, team 을 가지고올때 쿼리가 1번 더 나감.
+        Team team = findMember.getTeam();
+
+        MemberHomeDto member = new MemberHomeDto(
+                findMember.getUsername(),
+                findMember.getRating(),
+                team != null ? team.getTeamName() : null,
+                team != null ? team.getId() : null
+
+        );
 
         model.addAttribute("member", member);
-        model.addAttribute("teamId", findMember.getTeam().getId());
+
         return "loginHome";
     }
 

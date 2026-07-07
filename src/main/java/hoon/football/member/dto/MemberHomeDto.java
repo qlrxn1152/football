@@ -11,10 +11,12 @@ public class MemberHomeDto {
     private String username;
     private Integer rating;
     private String teamName;
+    private Long teamId;
 
-    public MemberHomeDto(String username, Integer rating, String teamName) {
+    public MemberHomeDto(String username, Integer rating, String teamName, Long teamId) {
         this.username = username;
         this.rating = rating;
         this.teamName = teamName;
+        this.teamId = teamId;
     }
 }

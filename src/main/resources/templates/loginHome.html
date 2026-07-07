@@ -18,9 +18,14 @@
         </p>
 
         <div class="grid" style="margin-top: 24px;">
-            <div class="stat-card">
+            <div th:if="${member.teamName != null}"  class="stat-card">
                 <p class="stat-label">나의 현재 레이팅 : <strong class="stat-value" th:text="${member.rating}">레이팅</strong></p>
-                <p class="stat-label">나의 팀 : <a th:href="@{/teams/{teamId}(teamId=${teamId})}" class="stat-value" th:text="${member.teamName}">팀이름</a></p>
+                <p class="stat-label">나의 팀 : <a th:href="@{/teams/{teamId}(teamId=${member.teamId})}" class="stat-value" th:text="${member.teamName}">팀이름</a></p>
+            </div>
+
+            <div th:if="${member.teamName == null}"  class="stat-card">
+                <p class="stat-label">나의 현재 레이팅 : <strong class="stat-value" th:text="${member.rating}">레이팅</strong></p>
+                <p class="stat-label">팀에 가입해서 다양한 기능을 경험해보세요.</p>
             </div>
         </div>
 
