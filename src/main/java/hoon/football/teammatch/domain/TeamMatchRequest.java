@@ -28,22 +28,22 @@ public class TeamMatchRequest {
     private Team awayTeam;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "match_request_status")
-    private TeamMatchRequestStatus matchRequestStatus;
+    @Column(name = "team_match_request_status")
+    private TeamMatchRequestStatus teamMatchRequestStatus;
 
     public TeamMatchRequest(TeamMatch teamMatch, Team homeTeam, Team awayTeam) {
         this.teamMatch = teamMatch;
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
-        this.matchRequestStatus = TeamMatchRequestStatus.PENDING;
+        this.teamMatchRequestStatus = TeamMatchRequestStatus.PENDING;
     }
 
     public void matched() {
-        this.matchRequestStatus = TeamMatchRequestStatus.MATCHED;
+        this.teamMatchRequestStatus = TeamMatchRequestStatus.MATCHED;
     }
 
     public void rejected() {
-        this.matchRequestStatus = TeamMatchRequestStatus.REJECTED;
+        this.teamMatchRequestStatus = TeamMatchRequestStatus.REJECTED;
     }
 
 }

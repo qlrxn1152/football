@@ -19,7 +19,7 @@
 
         <div class="grid" style="margin-top: 24px;">
             <div class="stat-card">
-                <p class="stat-label">현재 레이팅 : <strong class="stat-value" th:text="${member.rating}">레이팅</strong></p>
+                <p class="stat-label">나의 현재 레이팅 : <strong class="stat-value" th:text="${member.rating}">레이팅</strong></p>
                 <p class="stat-label">나의 팀 : <a th:href="@{/teams/{teamId}(teamId=${teamId})}" class="stat-value" th:text="${member.teamName}">팀이름</a></p>
             </div>
         </div>

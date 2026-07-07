@@ -21,7 +21,7 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberValidator memberValidator;
     private final PasswordEncoder passwordEncoder;
-    private final MemberRepository repository;
+    private final MemberRepository memberRepository;
 
     @Override
     public Member save(Member member) {
@@ -30,27 +30,27 @@ public class MemberServiceImpl implements MemberService {
         String encodedPassword = passwordEncoder.encode(member.getPassword());
         Member encodedMember = new Member(member.getUsername(), encodedPassword); // password 가, encoded 된 멤버객체를 저장.
 
-        return repository.save(encodedMember);
+        return memberRepository.save(encodedMember);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Member findById(Long id) {
-        return repository.findById(id)
+        return memberRepository.findById(id)
                 .orElseThrow(() -> new MemberNotFoundException("[ID(pk)] 조회실패"));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Member findByUsername(String username) {
-        return repository.findByUsername(username)
+        return memberRepository.findByUsername(username)
                 .orElseThrow(() -> new MemberNotFoundException("[USERNAME] 조회 실패"));
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Member> findAll() {
-        return repository.findAll();
+        return memberRepository.findAll();
     }
 
     @Override
@@ -67,7 +67,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public List<Member> findByTeamId(Long teamId) {
-        return repository.findByTeamId(teamId);
+        return memberRepository.findByTeamId(teamId);
     }
 
 

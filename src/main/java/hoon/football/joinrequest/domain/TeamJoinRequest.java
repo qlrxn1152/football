@@ -26,6 +26,7 @@ public class TeamJoinRequest {
     private Team team;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "team_join_request_status")
     private TeamJoinRequestStatus status;
 
     @Column(name = "request_at")

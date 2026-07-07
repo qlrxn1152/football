@@ -69,7 +69,7 @@ class TeamMatchServiceImplSuccessTest {
         assertThat(matchRequest.getTeamMatch()).isEqualTo(match);
         assertThat(matchRequest.getHomeTeam()).isEqualTo(teamA);
         assertThat(matchRequest.getAwayTeam()).isEqualTo(teamB);
-        assertThat(matchRequest.getMatchRequestStatus()).isEqualTo(TeamMatchRequestStatus.PENDING);
+        assertThat(matchRequest.getTeamMatchRequestStatus()).isEqualTo(TeamMatchRequestStatus.PENDING);
     }
 
     @Test
@@ -96,7 +96,7 @@ class TeamMatchServiceImplSuccessTest {
         assertThat(request.getTeamMatch()).isEqualTo(match);
         assertThat(request.getHomeTeam()).isEqualTo(teamA);
         assertThat(request.getAwayTeam()).isEqualTo(teamB);
-        assertThat(request.getMatchRequestStatus()).isEqualTo(TeamMatchRequestStatus.MATCHED);
+        assertThat(request.getTeamMatchRequestStatus()).isEqualTo(TeamMatchRequestStatus.MATCHED);
     }
 
     @Test
@@ -136,7 +136,7 @@ class TeamMatchServiceImplSuccessTest {
 
         // then
         assertThat(match.getStatus()).isEqualTo(TeamMatchStatus.PENDING);
-        assertThat(request.getMatchRequestStatus()).isEqualTo(TeamMatchRequestStatus.REJECTED);
+        assertThat(request.getTeamMatchRequestStatus()).isEqualTo(TeamMatchRequestStatus.REJECTED);
     }
 
     @Test

@@ -12,8 +12,8 @@
 <main class="container">
     <div class="page-header">
         <div>
-            <h1 class="page-title">팀 목록</h1>
-            <p class="page-description">등록된 팀을 확인하고 상세 페이지로 이동할 수 있습니다.</p>
+            <h1 class="page-title">팀 순위</h1>
+            <p class="page-description">등록된 팀의 레이팅 순위를 확인하고 상세 페이지로 이동할 수 있습니다.</p>
         </div>
 
         <div class="page-actions">
@@ -30,32 +30,79 @@
         등록된 팀이 없습니다.
     </div>
 
-    <div class="card" th:if="${!#lists.isEmpty(teams)}">
-        <table class="table">
+    <section class="card ranking-board" th:if="${!#lists.isEmpty(teams)}">
+        <div class="ranking-board-header">
+            <div>
+                <h2 class="ranking-board-title">Football 팀 랭킹</h2>
+                <p class="ranking-board-subtitle">레이팅 기준으로 정렬된 팀 목록입니다.</p>
+            </div>
+            <a class="btn btn-secondary" th:href="@{/teams/new}">팀 생성</a>
+        </div>
+
+        <div class="ranking-tabs">
+            <span class="ranking-tab active">전체</span>
+            <span class="ranking-tab">레이팅</span>
+            <span class="ranking-tab">팀 정보</span>
+        </div>
+
+        <table class="rank-table">
             <thead>
             <tr>
-                <th>팀 이름</th>
+                <th>순위</th>
+                <th class="team-cell">팀</th>
                 <th>레이팅</th>
-                <th>팀장</th>
+                <th class="hide-mobile">팀장</th>
                 <th>상세</th>
             </tr>
             </thead>
 
             <tbody>
-            <tr th:each="team : ${teams}">
-                <td th:text="${team.teamName}">teamA</td>
-                <td th:text="${team.rating}">1000</td>
-                <td th:text="${team.leaderMemberUsername}">userA</td>
+            <tr th:each="team, stat : ${teams}">
+                <td>
+                    <span class="rank-number"
+                          th:classappend="${stat.index < 3} ? ' top' : ''"
+                          th:text="${stat.count}">
+                        1
+                    </span>
+                </td>
+
+                <td class="team-cell">
+                    <div class="team-main">
+                        <span class="team-badge"
+                              th:text="${#strings.substring(team.teamName, 0, 1)}">
+                            F
+                        </span>
+                        <div>
+                            <a class="team-name-link"
+                               th:href="@{/teams/{teamId}(teamId=${team.teamId})}"
+                               th:text="${team.teamName}">
+                                teamA
+                            </a>
+                            <div class="team-meta mobile-only"
+                                 th:text="|팀장 ${team.leaderMemberUsername}|">
+                                팀장 userA
+                            </div>
+                        </div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="rating-score" th:text="${team.rating}">1000</div>
+                    <div class="rating-label">RATING</div>
+                </td>
+
+                <td class="hide-mobile" th:text="${team.leaderMemberUsername}">userA</td>
+
                 <td>
                     <a class="btn btn-secondary"
                        th:href="@{/teams/{teamId}(teamId=${team.teamId})}">
-                        상세 보기
+                        보기
                     </a>
                 </td>
             </tr>
             </tbody>
         </table>
-    </div>
+    </section>
 </main>
 </body>
 </html>
