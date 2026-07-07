@@ -1,0 +1,482 @@
+.game-team-home {
+    width: min(1180px, calc(100% - 40px));
+    margin: 32px auto;
+    display: grid;
+    gap: 20px;
+}
+
+.game-team-home .btn {
+    min-height: 38px;
+    padding: 9px 14px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.game-team-home .btn-primary {
+    background: #2563eb;
+}
+
+.game-team-home .btn-primary:hover {
+    background: #1d4ed8;
+}
+
+.game-team-home .btn-secondary {
+    background: #1f2933;
+    border-color: #4b5563;
+    color: #e5e7eb;
+}
+
+.game-team-home .btn-secondary:hover {
+    background: #2f3a45;
+}
+
+.game-team-home .btn-success {
+    background: #16a34a;
+}
+
+.game-team-home .btn-success:hover {
+    background: #15803d;
+}
+
+.game-team-home .btn-danger {
+    background: #dc2626;
+}
+
+.game-team-home .btn-danger:hover {
+    background: #b91c1c;
+}
+
+.game-team-home .inline-form {
+    display: inline-flex;
+    margin: 0;
+}
+
+.game-team-window {
+    overflow: hidden;
+    padding: 0;
+    background: #10161b;
+    border: 1px solid #2f3a43;
+    border-radius: 8px;
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.28);
+}
+
+.game-window-bar {
+    min-height: 34px;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    background: linear-gradient(#6f7b82, #30383f 45%, #151b20);
+    border-bottom: 1px solid #080c0f;
+    color: #dbe4ec;
+}
+
+.game-window-tabs {
+    display: flex;
+    align-items: stretch;
+    gap: 2px;
+    min-width: 0;
+}
+
+.game-window-tab {
+    min-width: 82px;
+    min-height: 34px;
+    padding: 8px 12px 7px;
+    border-top: 0;
+    border-bottom: 0;
+    border-left: 1px solid rgba(255, 255, 255, 0.12);
+    border-right: 1px solid rgba(0, 0, 0, 0.42);
+    appearance: none;
+    background: transparent;
+    color: #c8d1d9;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 900;
+    line-height: 1;
+    text-align: center;
+}
+
+.game-window-tab.active {
+    color: #ffffff;
+    background: linear-gradient(#34414a, #1b232a);
+}
+
+.game-window-status {
+    flex: 0 0 auto;
+    color: #aab5bd;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+}
+
+.game-tab-panel {
+    display: none;
+}
+
+.game-tab-panel.active {
+    display: block;
+}
+
+.clan-hero-top {
+    padding: 22px 24px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    background:
+        radial-gradient(circle at 12% 20%, rgba(59, 130, 246, 0.2), transparent 34%),
+        linear-gradient(135deg, #182128, #0e1419);
+    border-bottom: 1px solid #28333c;
+    color: #ffffff;
+}
+
+.clan-title-group {
+    min-width: 0;
+}
+
+.clan-badge-large {
+    width: 54px;
+    height: 54px;
+    margin-bottom: 12px;
+    border: 1px solid #fde68a;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #facc15, #b45309);
+    box-shadow: 0 0 0 4px rgba(250, 204, 21, 0.12);
+    color: #111827;
+    font-size: 28px;
+    font-weight: 900;
+}
+
+.clan-title {
+    margin: 0;
+    color: #f8fafc;
+    font-size: 30px;
+    font-weight: 900;
+}
+
+.clan-subtitle {
+    margin: 8px 0 0;
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+.clan-actions,
+.game-section-actions,
+.clan-item-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.game-stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    background: #12181d;
+    border-bottom: 1px solid #2a343d;
+}
+
+.clan-stat {
+    padding: 18px 20px;
+    border-right: 1px solid #29323a;
+}
+
+.clan-stat:last-child {
+    border-right: 0;
+}
+
+.clan-stat-label {
+    margin: 0 0 6px;
+    color: #84919c;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.clan-stat-value {
+    margin: 0;
+    color: #f8fafc;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.game-stack {
+    display: grid;
+    gap: 0;
+}
+
+.game-panel-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0;
+    background: #11161a;
+}
+
+.clan-member-section,
+.game-inner-panel {
+    overflow: hidden;
+    padding: 0;
+    background: #11161a;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.game-inner-panel {
+    border-right: 1px solid #2c353d;
+}
+
+.game-inner-panel:last-child {
+    border-right: 0;
+}
+
+.clan-section-header,
+.clan-panel-header {
+    min-height: 34px;
+    padding: 11px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: linear-gradient(#4a535b, #252d34 50%, #151b20);
+    border-bottom: 1px solid #0c1115;
+}
+
+.clan-section-title,
+.clan-panel-title {
+    margin: 0;
+    color: #eef2f7;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.clan-section-title::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    margin-right: 8px;
+    border-radius: 2px;
+    display: inline-block;
+    background: #facc15;
+    box-shadow: 0 0 8px rgba(250, 204, 21, 0.55);
+    vertical-align: 1px;
+}
+
+.clan-section-count {
+    color: #9ca3af;
+    font-size: 13px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.clan-member-table-wrap {
+    overflow-x: auto;
+    background: #11161a;
+}
+
+.clan-member-table {
+    width: 100%;
+    min-width: 720px;
+    border-collapse: collapse;
+    color: #d1d5db;
+}
+
+.clan-member-table th {
+    padding: 9px 12px;
+    background: linear-gradient(#252e36, #171e25);
+    border-bottom: 1px solid #0d1115;
+    color: #bac5cf;
+    font-size: 12px;
+    font-weight: 900;
+    text-align: left;
+}
+
+.clan-member-table td {
+    height: 42px;
+    padding: 10px 12px;
+    border-bottom: 1px solid #242b31;
+    background: rgba(17, 22, 26, 0.94);
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.clan-member-table tbody tr:hover td {
+    background: #1b2329;
+}
+
+.clan-member-rank {
+    width: 34px;
+    height: 22px;
+    border: 1px solid #60707d;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(#44515b, #26313a);
+    color: #facc15;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.clan-member-nickname {
+    color: #e5e7eb;
+    font-weight: 900;
+}
+
+.clan-leader-mark {
+    margin-left: 8px;
+    padding: 2px 6px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.clan-member-muted {
+    color: #8b949e;
+}
+
+.game-status-chip {
+    min-height: 22px;
+    padding: 0 8px;
+    border: 1px solid rgba(74, 222, 128, 0.28);
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    background: rgba(22, 163, 74, 0.14);
+    color: #86efac;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.clan-member-empty,
+.clan-empty {
+    padding: 30px 18px;
+    background: #11161a;
+    color: #9ca3af;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.clan-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.clan-list-item {
+    padding: 15px 18px;
+    border-bottom: 1px solid #263039;
+    background: #12181d;
+}
+
+.clan-list-item:last-child {
+    border-bottom: 0;
+}
+
+.clan-list-item:hover {
+    background: #182028;
+}
+
+.clan-item-main {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.clan-item-title {
+    margin: 0;
+    color: #e5e7eb;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.clan-item-meta {
+    margin: 5px 0 0;
+    color: #9ca3af;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.clan-item-actions {
+    margin-top: 12px;
+}
+
+@media (max-width: 720px) {
+    .game-team-home {
+        width: min(100% - 24px, 1120px);
+        margin-top: 22px;
+    }
+
+    .game-window-bar {
+        align-items: stretch;
+        flex-direction: column;
+        padding: 0;
+    }
+
+    .game-window-tabs {
+        width: 100%;
+    }
+
+    .game-window-tab {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .game-window-status {
+        padding: 8px 10px;
+    }
+
+    .clan-hero-top {
+        flex-direction: column;
+    }
+
+    .clan-actions,
+    .game-section-actions {
+        justify-content: flex-start;
+        width: 100%;
+    }
+
+    .game-stat-row,
+    .game-panel-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .clan-stat {
+        border-right: 0;
+        border-bottom: 1px solid #29323a;
+    }
+
+    .clan-stat:last-child {
+        border-bottom: 0;
+    }
+
+    .game-inner-panel {
+        border-right: 0;
+        border-bottom: 1px solid #2c353d;
+    }
+
+    .game-inner-panel:last-child {
+        border-bottom: 0;
+    }
+}

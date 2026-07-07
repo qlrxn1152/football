@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -5,203 +6,300 @@
     <title>팀 상세</title>
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/teamDetail.css}">
 </head>
 <body>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<main class="container">
-    <div class="page-header">
-        <div>
-            <h1 class="page-title" th:text="${team.teamName}">팀 이름</h1>
-            <p class="page-description">팀 정보, 가입 신청, 매칭 요청과 진행 중인 매칭을 관리합니다.</p>
-        </div>
-
-        <div class="page-actions">
-            <a class="btn btn-secondary" th:href="@{/teams}">팀 목록</a>
-            <a class="btn btn-secondary" th:href="@{/teams/{teamId}/edit(teamId=${team.teamId})}">팀 이름 수정</a>
-        </div>
-    </div>
-
+<main class="container clan-home game-team-home">
     <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}">
         성공 메시지
     </div>
 
-    <section class="grid">
-        <div class="stat-card">
-            <p class="stat-label">팀 레이팅</p>
-            <p class="stat-value" th:text="${team.rating}">1000</p>
+    <section class="card clan-hero game-team-window">
+        <div class="game-window-bar">
+            <div class="game-window-tabs" aria-label="팀 상세 메뉴">
+                <button type="button" class="game-window-tab active" data-tab-target="team-info">
+                    팀 정보
+                </button>
+                <button type="button" class="game-window-tab" data-tab-target="team-members">
+                    팀원
+                </button>
+                <button type="button" class="game-window-tab" data-tab-target="team-matches">
+                    매치
+                </button>
+            </div>
+            <div class="game-window-status">FOOTMATCH TEAM</div>
         </div>
 
-        <div class="stat-card">
-            <p class="stat-label">팀장</p>
-            <p class="stat-value" th:text="${team.leaderMemberUsername}">leader</p>
-        </div>
-    </section>
-
-    <section class="section card">
-        <h2 class="section-title">팀원 목록</h2>
-
-        <table class="table">
-            <thead>
-            <tr>
-                <th>회원 이름</th>
-                <th>레이팅</th>
-            </tr>
-            </thead>
-
-            <tbody>
-            <tr th:if="${#lists.isEmpty(members)}">
-                <td colspan="2">아직 팀원이 없습니다.</td>
-            </tr>
-
-            <tr th:each="member : ${members}">
-                <td th:text="${member.username}">userA</td>
-                <td th:text="${member.memberRating}">1000</td>
-            </tr>
-            </tbody>
-        </table>
-    </section>
-
-    <section class="section card">
-        <h2 class="section-title">가입 신청 목록</h2>
-
-        <table class="table">
-            <thead>
-            <tr>
-                <th>회원 이름</th>
-                <th>레이팅</th>
-                <th>신청 날짜</th>
-                <th>관리</th>
-            </tr>
-            </thead>
-
-            <tbody>
-            <tr th:if="${#lists.isEmpty(requests)}">
-                <td colspan="4">아직 가입 신청한 팀원이 없습니다.</td>
-            </tr>
-
-            <tr th:each="request : ${requests}">
-                <td th:text="${request.requestMemberUsername}">userA</td>
-                <td th:text="${request.requestMemberRating}">1000</td>
-                <td th:text="${#temporals.format(request.requestAt, 'yyyy-MM-dd HH:mm')}">
-                    2026-01-01 12:00
-                </td>
-                <td>
-                    <div class="action-row">
-                        <form class="inline-form"
-                              th:action="@{/teams/{teamId}/join-requests/{requestMemberId}/accept(
-                                      teamId=${team.teamId},
-                                      requestMemberId=${request.requestMemberId}
-                                  )}"
-                              method="post">
-                            <button type="submit" class="btn btn-success">수락</button>
-                        </form>
-
-                        <form class="inline-form"
-                              th:action="@{/teams/{teamId}/join-requests/{requestMemberId}/reject(
-                                      teamId=${team.teamId},
-                                      requestMemberId=${request.requestMemberId}
-                                  )}"
-                              method="post">
-                            <button type="submit" class="btn btn-danger">거절</button>
-                        </form>
+        <div class="game-tab-panel active" data-tab-panel="team-info">
+            <div class="clan-hero-top">
+                <div class="clan-title-group">
+                    <div class="clan-badge-large"
+                         th:text="${#strings.substring(team.teamName, 0, 1)}">
+                        F
                     </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </section>
 
-    <section class="section card">
-        <h2 class="section-title">매칭 요청 목록</h2>
+                    <h1 class="clan-title" th:text="${team.teamName}">팀 이름</h1>
+                    <p class="clan-subtitle">팀 정보와 주요 액션을 확인합니다.</p>
+                </div>
 
-        <table class="table">
-            <thead>
-            <tr>
-                <th>원정팀 이름</th>
-                <th>원정팀 레이팅</th>
-                <th>원정팀 팀장</th>
-                <th>관리</th>
-            </tr>
-            </thead>
-
-            <tbody>
-            <tr th:if="${#lists.isEmpty(matchRequests)}">
-                <td colspan="4">아직 매칭 요청한 팀이 없습니다.</td>
-            </tr>
-
-            <tr th:each="matchRequest : ${matchRequests}">
-                <td th:text="${matchRequest.awayTeamName}">원정팀 이름</td>
-                <td th:text="${matchRequest.awayTeamRating}">1000</td>
-                <td th:text="${matchRequest.awayTeamLeaderMemberUsername}">원정팀 팀장</td>
-                <td>
-                    <form class="inline-form"
-                          th:action="@{/matches/{matchId}/accept/{awayTeamId}(
-                                  matchId=${matchRequest.matchId},
-                                  awayTeamId=${matchRequest.awayTeamId}
-                              )}"
-                          method="post">
-                        <button type="submit" class="btn btn-success">수락</button>
-                    </form>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </section>
-
-    <section class="section card">
-        <h2 class="section-title">진행 중인 매칭</h2>
-
-        <table class="table">
-            <thead>
-            <tr>
-                <th>원정팀 이름</th>
-                <th>원정팀 레이팅</th>
-                <th>원정팀 팀장</th>
-                <th>관리</th>
-            </tr>
-            </thead>
-
-            <tbody>
-            <tr th:if="${#lists.isEmpty(matches)}">
-                <td colspan="4">아직 진행 중인 매칭이 없습니다.</td>
-            </tr>
-
-            <tr th:each="match : ${matches}">
-                <td th:text="${match.awayTeamName}">원정팀 이름</td>
-                <td th:text="${match.awayTeamRating}">1000</td>
-                <td th:text="${match.awayTeamLeaderMemberUsername}">원정팀 팀장</td>
-                <td>
-                    <a class="btn btn-primary"
-                       th:href="@{/matches/{matchId}/result/{awayTeamId}(
-                               matchId=${match.matchId},
-                               awayTeamId=${match.awayTeamId}
-                           )}">
-                        결과 입력
+                <div class="clan-actions">
+                    <a class="btn btn-secondary" th:href="@{/teams}">팀 목록</a>
+                    <a class="btn btn-secondary"
+                       th:href="@{/teams/{teamId}/edit(teamId=${team.teamId})}">
+                        팀 이름 수정
                     </a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </section>
+                </div>
+            </div>
 
-    <section class="section card">
-        <h2 class="section-title">팀 작업</h2>
+            <div class="clan-stats game-stat-row">
+                <div class="clan-stat">
+                    <p class="clan-stat-label">팀 레이팅</p>
+                    <p class="clan-stat-value" th:text="${team.rating}">1000</p>
+                </div>
 
-        <div class="action-row">
-            <form class="inline-form"
-                  th:action="@{/teams/{teamId}/join-requests(teamId=${team.teamId})}"
-                  method="post">
-                <button type="submit" class="btn btn-secondary">가입 신청</button>
-            </form>
+                <div class="clan-stat">
+                    <p class="clan-stat-label">팀장</p>
+                    <p class="clan-stat-value" th:text="${team.leaderMemberUsername}">leader</p>
+                </div>
 
-            <form class="inline-form"
-                  th:action="@{/matches/new/{teamId}(teamId=${team.teamId})}"
-                  method="post">
-                <button type="submit" class="btn btn-primary">매칭 등록</button>
-            </form>
+                <div class="clan-stat">
+                    <p class="clan-stat-label">팀원 수</p>
+                    <p class="clan-stat-value" th:text="${#lists.size(members)}">0</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-tab-panel" data-tab-panel="team-members">
+            <div class="game-stack">
+                <div class="clan-member-section game-table-window">
+                    <div class="clan-section-header">
+                        <h2 class="clan-section-title">팀원 목록</h2>
+                        <div class="game-section-actions">
+                            <span class="clan-section-count" th:text="|${#lists.size(members)}명|">0명</span>
+                            <form class="inline-form"
+                                  th:action="@{/teams/{teamId}/join-requests(teamId=${team.teamId})}"
+                                  method="post">
+                                <button type="submit" class="btn btn-secondary">가입 신청</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="clan-member-empty" th:if="${#lists.isEmpty(members)}">
+                        아직 팀원이 없습니다.
+                    </div>
+
+                    <div class="clan-member-table-wrap" th:if="${!#lists.isEmpty(members)}">
+                        <table class="clan-member-table">
+                            <thead>
+                            <tr>
+                                <th>마크</th>
+                                <th>닉네임</th>
+                                <th>역할</th>
+                                <th>레이팅</th>
+                                <th>상태</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            <tr th:each="member : ${members}">
+                                <td>
+                                    <span class="clan-member-rank">M</span>
+                                </td>
+                                <td>
+                                    <span class="clan-member-nickname" th:text="${member.username}">
+                                        userA
+                                    </span>
+                                    <span class="clan-leader-mark"
+                                          th:if="${member.username == team.leaderMemberUsername}">
+                                        팀장
+                                    </span>
+                                </td>
+                                <td class="clan-member-muted"
+                                    th:text="${member.username == team.leaderMemberUsername ? '팀장' : '팀원'}">
+                                    팀원
+                                </td>
+                                <td th:text="${member.memberRating}">1000</td>
+                                <td><span class="game-status-chip">활동 가능</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="clan-panel game-inner-panel">
+                    <div class="clan-panel-header">
+                        <h2 class="clan-panel-title">가입 신청</h2>
+                        <span class="clan-section-count" th:text="|${#lists.size(requests)}건|">0건</span>
+                    </div>
+
+                    <div class="clan-panel-body">
+                        <div class="clan-empty" th:if="${#lists.isEmpty(requests)}">
+                            아직 가입 신청이 없습니다.
+                        </div>
+
+                        <ul class="clan-list" th:if="${!#lists.isEmpty(requests)}">
+                            <li class="clan-list-item" th:each="request : ${requests}">
+                                <div class="clan-item-main">
+                                    <div>
+                                        <p class="clan-item-title" th:text="${request.requestMemberUsername}">
+                                            userA
+                                        </p>
+                                        <p class="clan-item-meta">
+                                            Rating
+                                            <span th:text="${request.requestMemberRating}">1000</span>
+                                            ·
+                                            <span th:text="${#temporals.format(request.requestAt, 'yyyy-MM-dd HH:mm')}">
+                                                2026-01-01 12:00
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="clan-item-actions">
+                                    <form class="inline-form"
+                                          th:action="@{/teams/{teamId}/join-requests/{requestMemberId}/accept(
+                                                  teamId=${team.teamId},
+                                                  requestMemberId=${request.requestMemberId}
+                                              )}"
+                                          method="post">
+                                        <button type="submit" class="btn btn-success">수락</button>
+                                    </form>
+
+                                    <form class="inline-form"
+                                          th:action="@{/teams/{teamId}/join-requests/{requestMemberId}/reject(
+                                                  teamId=${team.teamId},
+                                                  requestMemberId=${request.requestMemberId}
+                                              )}"
+                                          method="post">
+                                        <button type="submit" class="btn btn-danger">거절</button>
+                                    </form>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-tab-panel" data-tab-panel="team-matches">
+            <div class="game-panel-grid">
+                <div class="clan-panel game-inner-panel">
+                    <div class="clan-panel-header">
+                        <h2 class="clan-panel-title">진행 중인 매치</h2>
+                        <div class="game-section-actions">
+                            <span class="clan-section-count" th:text="|${#lists.size(matches)}건|">0건</span>
+                            <form class="inline-form"
+                                  th:action="@{/matches/new/{teamId}(teamId=${team.teamId})}"
+                                  method="post">
+                                <button type="submit" class="btn btn-primary">매칭 등록</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="clan-panel-body">
+                        <div class="clan-empty" th:if="${#lists.isEmpty(matches)}">
+                            아직 진행 중인 매치가 없습니다.
+                        </div>
+
+                        <ul class="clan-list" th:if="${!#lists.isEmpty(matches)}">
+                            <li class="clan-list-item" th:each="match : ${matches}">
+                                <div class="clan-item-main">
+                                    <div>
+                                        <p class="clan-item-title" th:text="${match.awayTeamName}">
+                                            원정팀 이름
+                                        </p>
+                                        <p class="clan-item-meta">
+                                            Rating
+                                            <span th:text="${match.awayTeamRating}">1000</span>
+                                            · 팀장
+                                            <span th:text="${match.awayTeamLeaderMemberUsername}">
+                                                원정팀 팀장
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="clan-item-actions">
+                                    <a class="btn btn-primary"
+                                       th:href="@{/matches/{matchId}/result/{awayTeamId}(
+                                               matchId=${match.matchId},
+                                               awayTeamId=${match.awayTeamId}
+                                           )}">
+                                        결과 입력
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="clan-panel game-inner-panel">
+                    <div class="clan-panel-header">
+                        <h2 class="clan-panel-title">매치 요청</h2>
+                        <span class="clan-section-count" th:text="|${#lists.size(matchRequests)}건|">0건</span>
+                    </div>
+
+                    <div class="clan-panel-body">
+                        <div class="clan-empty" th:if="${#lists.isEmpty(matchRequests)}">
+                            아직 들어온 매치 요청이 없습니다.
+                        </div>
+
+                        <ul class="clan-list" th:if="${!#lists.isEmpty(matchRequests)}">
+                            <li class="clan-list-item" th:each="matchRequest : ${matchRequests}">
+                                <div class="clan-item-main">
+                                    <div>
+                                        <p class="clan-item-title" th:text="${matchRequest.awayTeamName}">
+                                            원정팀 이름
+                                        </p>
+                                        <p class="clan-item-meta">
+                                            Rating
+                                            <span th:text="${matchRequest.awayTeamRating}">1000</span>
+                                            · 팀장
+                                            <span th:text="${matchRequest.awayTeamLeaderMemberUsername}">
+                                                원정팀 팀장
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="clan-item-actions">
+                                    <form class="inline-form"
+                                          th:action="@{/matches/{matchId}/accept/{awayTeamId}(
+                                                  matchId=${matchRequest.matchId},
+                                                  awayTeamId=${matchRequest.awayTeamId}
+                                              )}"
+                                          method="post">
+                                        <button type="submit" class="btn btn-success">수락</button>
+                                    </form>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 </main>
+
+<script>
+    const tabButtons = document.querySelectorAll("[data-tab-target]");
+    const tabPanels = document.querySelectorAll("[data-tab-panel]");
+
+    tabButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            const target = button.dataset.tabTarget;
+
+            tabButtons.forEach((tabButton) => {
+                tabButton.classList.toggle("active", tabButton === button);
+            });
+
+            tabPanels.forEach((panel) => {
+                panel.classList.toggle("active", panel.dataset.tabPanel === target);
+            });
+        });
+    });
+</script>
 </body>
 </html>

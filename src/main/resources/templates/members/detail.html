@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>회원 상세</title>
+  <link rel="stylesheet" th:href="@{/css/navbar.css}">
+  <link rel="stylesheet" th:href="@{/css/common.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main class="container">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">회원 상세</h1>
+      <p class="page-description">회원의 기본 정보를 확인할 수 있습니다.</p>
+    </div>
+
+    <div class="page-actions">
+      <a class="btn btn-secondary" th:href="@{/members}">회원 목록</a>
+      <a class="btn btn-secondary" th:href="@{/}">홈으로</a>
+    </div>
+  </div>
+
+  <section class="grid">
+    <div class="stat-card">
+      <p class="stat-label">이름</p>
+      <p class="stat-value" th:text="${memberDetailDto.username}">username</p>
+    </div>
+
+    <div class="stat-card">
+      <p class="stat-label">레이팅</p>
+      <p class="stat-value" th:text="${memberDetailDto.memberRating}">1000</p>
+    </div>
+
+    <div class="stat-card" th:if="${memberDetailDto.teamName != null}">
+      <p class="stat-label">소속 팀</p>
+      <a class="team-name-link" th:href="@{/teams/{teamId}(teamId=${memberDetailDto.teamId})}" th:text="${memberDetailDto.teamName}">팀 이름</a>
+    </div>
+
+    <div class="stat-card" th:if="${memberDetailDto.teamName == null}">
+      <p class="stat-label">소속 팀</p>
+      <p class="stat-value">없음</p>
+      <p class="page-description">아직 소속된 팀이 없습니다.</p>
+
+      <div class="action-row" style="margin-top: 16px;">
+        <a class="btn btn-primary" th:href="@{/teams}">팀 둘러보기</a>
+        <a class="btn btn-secondary" th:href="@{/teams/new}">팀 생성하기</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>
