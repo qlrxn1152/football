@@ -111,15 +111,6 @@
 
 ![](https://velog.velcdn.com/images/qlrxn1152/post/05fceccd-ca53-47a0-92fb-489d14d8bb1b/image.png)
 
---- 
-
-## GITHUB
-[GITHUB](https://github.com/qlrxn1152/football)
-
-
-
-
-
 
 ---
 
